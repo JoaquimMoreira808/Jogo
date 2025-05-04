@@ -1,9 +1,11 @@
+#=================================================================
+
+from arts import * 
 
 #=================================================================
 
 # Delay pra textos: Recomendação usar de 1 a 15 sendo 1 o mais rápido.
 # Exemplo: digitar(10, "Olá, mundo!")
-
 
 def digitar(tempo: int, texto: str):
     def delay(t):
@@ -15,7 +17,11 @@ def digitar(tempo: int, texto: str):
     print()
 
 #=================================================================
+#Varíavel global pra controle do menu
 
+starts = 0  
+
+#=================================================================
 
 # Menu, é um menu :I
 
@@ -40,10 +46,31 @@ def menu():
             print("Gerenciando os membros da party...")
         elif escolha == "0":
             print("Até a próxima, aventureiro!")
-            return False
-            break
+            menu1()
         else:
             print("Opção inválida. Tente novamente.")
 
+#=================================================================
+
+def menu1():
+    print(menu_art)
+    input("")
+    if input:
+        start()
+
+#=================================================================
+
+def start(): 
+    global starts 
+    if starts >= 1:
+        menu()
+    else:
+        starts += 1
+        print("""\n""")
+        digitar(4, "Os antigos contam sobre uma coroa de poder arcano infinito,")
+        digitar(4, "contam que o objeto habita a última casa do tabuleiro.") 
+        digitar(6, "Aqueles corajosos o suficiente mudariam a história,")
+        digitar(6, "mas ninguém esperava que o impossível fosse feito por um peão.")
+        menu()
 
 #=================================================================
