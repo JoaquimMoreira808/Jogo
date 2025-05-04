@@ -17,7 +17,6 @@ def digitar(texto: str):
         delay(tempo)
     print()
 
-
 #=================================================================
 #Varíavel global pra controle do menu
 
@@ -85,14 +84,6 @@ def start():
 
 #=================================================================
 
-
-def seguir_caminho():
-    mensagem = random.choice(inicios_caminho)
-    digitar(mensagem)
-    escolher_evento()
-
-#==================================================================
-
 def mostrar_party():
     sprites = ""
     for nome, info in party.items():
@@ -101,7 +92,7 @@ def mostrar_party():
 
     for nome, info in party.items():
         print(f"{nome} | HP: {info['hp']} | Defesa: {info['defesa']} | Força: {info['forca']}")
-        
+
     continuar() 
 
 #==================================================================
@@ -136,9 +127,41 @@ def acampamento_aventureiros():
 
 #==================================================================
 
-acoes = (acampamento_aventureiros,)
+def achar_estrutura():
+    estrutura_nome, dados = random.choice(list(estruturas.items()))
 
-def escolher_evento():
-    random.choice(acoes)()
+    print(dados["sprite"])
+    digitar(dados["mensagem"])
+    continuar()
+
+    while True:
+        print("\n╔═══════════════════════════════╗")
+        print("║        O que você faz?        ║")
+        print("╠═══════════════════════════════╣")
+        print("║ 1. Sair dali                  ║")
+        print("║ 2. Explorar estrutura         ║")
+        print("╚═══════════════════════════════╝")
+        escolha = input("Escolha uma opção (1 ou 2): ").strip()
+
+        if escolha == "1":
+            digitar("Você decide não se arriscar e parte em silêncio...")
+            break
+        elif escolha == "2":
+            digitar("Você explora os arredores com cautela...")
+            break
+        else:
+            print("Escolha uma opção válida.")
 
 #==================================================================
+
+acoes = [acampamento_aventureiros, achar_estrutura]
+pesos = [1, 3]
+
+def seguir_caminho():
+    mensagem = random.choice(inicios_caminho)
+    digitar(mensagem)
+    evento = random.choices(acoes, weights=pesos, k=1)[0]
+    evento()
+
+#==================================================================    
+

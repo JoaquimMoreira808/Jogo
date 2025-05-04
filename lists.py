@@ -1,12 +1,21 @@
 inicios_caminho = [
     "Você avança por entre as sombras e encontra",
     "A trilha escurece... e você encontra",
-    "O vento sussurra segredos antigos enquanto você encontra",
+    "O vento sussurra segredos antigos e você encontra",
     "O solo range sob seus pés quando você encontra",
     "Luzes distorcidas dançam ao longe... você encontra",
     "A névoa se parte lentamente, revelando",
     "O cheiro de sangue e ferrugem guia você até",
     "Entre árvores retorcidas e raízes podres, surge",
     "Sons guturais ecoam ao redor quando você encontra",
-    "O silêncio repentino anuncia a presença de"
+    "O silêncio repentino anuncia a presença de",
+    "As sombras ganham forma e te conduzem até",
+    "Uma risada abafada se dissolve no vento quando você encontra",
+    "Sangue seco marca o caminho até",
+    "Estátuas quebradas observam enquanto você encontra",
+    "Uma presença antiga pesa sobre o ar... algo se aproxima",
+    "Chamas verdes tremeluzem no escuro, revelando",
+    "O céu sem cor parece afundar quando você encontra",
+    "Um sussurro em uma língua esquecida te leva até",
+    "O tempo parece parar diante de"
 ]

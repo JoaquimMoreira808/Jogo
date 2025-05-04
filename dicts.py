@@ -76,6 +76,70 @@ personagens = {
     }
 }
 
+# ==========================
+# Estruturas
+# ==========================
+
+
+estruturas = {
+    "fortaleza": {
+        "sprite": """
+                uuu       uuu
+               uuu|=====uuu |
+               | |======| |'|
+^-/^-/^-/^-/^-/| | .==. | | |-^~/-^
+^-/^-/^-/^- ^~ |___|##|___|/ ^~ ^ ^
+""",
+        "mensagem": "Uma fortaleza antiga, suas muralhas sussurram segredos de guerras passadas."
+    },
+    "ponte": {
+        "sprite": """
+ `
+           |xx|             |x|
+  ============|===============|===--
+  ejm ~~~~~|xx|~~~~~~~~~~~~~|x|~~~ ~~  ~   ~
+
+""",
+        "mensagem": "Uma ponte de pedra sobre um rio sereno. Algo parece observar por baixo dela..."
+    },
+    "torre_mistica": {
+        "sprite": """
+                          ._
+                          |~
+                        uuuuu
+                        |_#-|
+                        | _#|
+                        |_ -|
+   ________ .$$. ______ | - | _____________
+           .#$$$. __    |-  | ....__
+     _.--' $$$$$$    ` -[__N]        `--a:f-
+           $$$$$$    -.
+      -.    `:/'    _.))        .--.
+             ||   .'.-'     _..-.. _.-.
+""",
+        "mensagem": "Uma torre mística ergue-se solitária, irradiando energia arcana do topo."
+    },
+    "cabana": {
+        "sprite": """
+                   )
+                 _(
+             ___|_|_________
+            /___|_|_________\
+       ()  /_________________\
+   `'.()))/___________________\'-.'`'.
+  .,'(())()   ____     ____  |,.'     '-.
+     )(()))  |)~~(|   |)~~(| |. '-. ()`'.
+    ()()(()) ||__||   ||__|| | `'.,(())
+   ())()(()))________________|___ ()))()
+   ()((())()))| | | | | | | | | | (()()))
+  ()))(()()())|_|_|_|_|_|_|_|_|_|)(()(()
+  (()((())(()-------------------|(())(())
+  ~^~ ^" ^"  ^~^   ^"   ~^~    ^~^~(()(()
+  ^"     ^~^   ~^~   ^"    ^~^   ~~^~""^
+""",
+        "mensagem": "Uma cabana isolada, fumaça escapa pela chaminé. Alguém ainda vive aqui?"
+    }
+}
 
 # ==========================
 # Party (Grupo do Jogador)
