@@ -1,25 +1,31 @@
 #=================================================================
 
 from arts import * 
+from dicts import *
+from lists import *
+import random
 
 #=================================================================
 
-# Delay pra textos: Recomendação usar de 1 a 15 sendo 1 o mais rápido.
-# Exemplo: digitar(10, "Olá, mundo!")
-
-def digitar(tempo: int, texto: str):
+def digitar(texto: str):
     def delay(t):
         for i in range(t):
             pass
+    tempo = max(1, (99999999 // len(texto)))  
     for letra in texto:
         print(letra, end='', flush=True)
-        delay(tempo * 999999)
+        delay(tempo)
     print()
+
 
 #=================================================================
 #Varíavel global pra controle do menu
 
-starts = 0  
+starts = 1
+#=================================================================
+
+def continuar():
+    input("Pressione qualquer tecla para continuar...")
 
 #=================================================================
 
@@ -27,23 +33,27 @@ starts = 0
 
 def menu():
     while True:
-        print("\n--- MENU PRINCIPAL ---")
-        print("1. Seguir caminho")
-        print("2. Ver mapa")
-        print("3. Gerenciar itens")
-        print("4. Gerenciar party")
-        print("0. Sair")
+        print("\n╔═══════════════════════════════╗")
+        print("║         MENU PRINCIPAL        ║")
+        print("╠═══════════════════════════════╣")
+        print("║ 1. Seguir caminho             ║")
+        print("║ 2. Ver mapa                   ║")
+        print("║ 3. Gerenciar itens            ║")
+        print("║ 4. Gerenciar party            ║")
+        print("║ 0. Sair                       ║")
+        print("╚═══════════════════════════════╝")
+
 
         escolha = input("Escolha uma opção: ")
 
         if escolha == "1":
-            print("Você segue pelo caminho misterioso...")
+            seguir_caminho()
         elif escolha == "2":
             print("Você abre o mapa e observa a região.")
         elif escolha == "3":
             print("Abrindo o inventário de itens...")
         elif escolha == "4":
-            print("Gerenciando os membros da party...")
+            mostrar_party()
         elif escolha == "0":
             print("Até a próxima, aventureiro!")
             menu1()
@@ -67,10 +77,68 @@ def start():
     else:
         starts += 1
         print("""\n""")
-        digitar(4, "Os antigos contam sobre uma coroa de poder arcano infinito,")
-        digitar(4, "contam que o objeto habita a última casa do tabuleiro.") 
-        digitar(6, "Aqueles corajosos o suficiente mudariam a história,")
-        digitar(6, "mas ninguém esperava que o impossível fosse feito por um peão.")
+        digitar("Os antigos contam sobre uma coroa de poder arcano infinito,")
+        digitar("contam que o objeto habita a última casa do tabuleiro.") 
+        digitar("Aqueles corajosos o suficiente mudariam a história,")
+        digitar("mas ninguém esperava que o impossível fosse feito por um peão.")
         menu()
 
 #=================================================================
+
+
+def seguir_caminho():
+    mensagem = random.choice(inicios_caminho)
+    digitar(mensagem)
+    escolher_evento()
+
+#==================================================================
+
+def mostrar_party():
+    sprites = ""
+    for nome, info in party.items():
+        sprites += f"{info['sprite']}" 
+    print("\n" + sprites)
+
+    for nome, info in party.items():
+        print(f"{nome} | HP: {info['hp']} | Defesa: {info['defesa']} | Força: {info['forca']}")
+        
+    continuar() 
+
+#==================================================================
+
+def acampamento_aventureiros():
+    digitar("um acampamento. A fogueira bruxuleia, iluminando")
+    digitar("os rostos cansados dos aventureiros.")
+    digitar('"Um de nós pode ir com você", diz um deles, com olhos sombrios. Quem você escolhe?')
+    continuar()
+
+    personagens_aleatorios = random.sample(list(personagens.items()), 3)
+
+    opcoes = {}
+    for i, (nome, info) in enumerate(personagens_aleatorios, 1):
+        print(f"\n[{i}] {nome}:")
+        print(info["sprite"])
+        print(f"HP: {info['hp']}")
+        print(f"Defesa: {info['defesa']}")
+        print(f"Força: {info['forca']}")
+        print("-" * 30)
+        opcoes[str(i)] = (nome, info)
+
+    escolha = ""
+    while escolha not in opcoes:
+        escolha = input("\nEscolha com sabedoria (1, 2 ou 3): ").strip()
+
+    escolhido_nome, escolhido_info = opcoes[escolha]
+    party[escolhido_nome] = escolhido_info
+    digitar(f"{escolhido_nome} agora faz parte do seu grupo.")
+    
+    continuar()
+
+#==================================================================
+
+acoes = (acampamento_aventureiros,)
+
+def escolher_evento():
+    random.choice(acoes)()
+
+#==================================================================
