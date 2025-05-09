@@ -3,6 +3,7 @@
 from arts import * 
 from dicts import *
 from lists import *
+from items import *
 import random
 import time
 
@@ -47,7 +48,7 @@ def menu():
         elif escolha == "2":
             print("Você abre o mapa e observa a região.")
         elif escolha == "3":
-            print("Abrindo o inventário de itens...")
+            abrir_inventario()  
         elif escolha == "4":
             mostrar_party()
         elif escolha == "0":
@@ -278,7 +279,18 @@ def achar_estrutura():
             break
         elif escolha == "2":
             digitar("Você explora os arredores com cautela...")
-            break
+            
+            chance = random.choices(["item", "nada"], weights=[70, 30], k=1)[0]
+            
+            if chance == "item":
+                item_encontrado = random.choice(itens_possiveis)
+                inventario.append(item_encontrado)
+                digitar(f"Você encontrou um item: {item_encontrado.nome}!")
+                digitar(f"{item_encontrado.descricao}")
+
+            else:
+                digitar("Você vasculha tudo, mais não encontra nada de útil.")
+
         else:
             print("Escolha uma opção válida.")
 
@@ -310,3 +322,26 @@ def seguir_caminho():
 
 #==================================================================    
 
+inventario = []
+
+itens_possiveis = [
+    item("Unguento do Curandeiro", "Cura 15 de HP."),
+    item("Frasco de Piche", "Reduz a velocidade do inimigo."),
+    item("Pólvora Negra", "Causa 5 de dano ao inimigo."),
+    item("Flechas Incendiárias", "Causa dano contínuo leve."),
+    item("Mapa Roubado", "Mostra a localização de um acampamento.")
+]
+
+def abrir_inventario():
+    if not inventario:
+        print("\nSeu inventário está vazio.")
+        continuar()
+        return
+
+    print("\nInventário:")
+    for i, item in enumerate(inventario, 1):
+        print(f"{i}. {item.nome} — {item.descricao}")
+
+    continuar()
+
+    #================================================================== 
