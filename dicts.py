@@ -1,3 +1,20 @@
+player = [
+    {
+        "Nome": "Player",
+        "sprite": """
+    _    
+   ( )    
+  <_I_>   
+  _|V|_   
+ \__I__/ 
+ /__I__\  
+""",
+        "hp": 10,
+        "defesa": 3,
+        "forca": 5
+    }
+]
+
 personagens = [
     {
         "Nome": "Peao",
@@ -63,6 +80,83 @@ personagens = [
         "hp": 16,
         "defesa": 5,
         "forca": 8
+    }
+]
+
+# ==========================
+# Inimigos
+# ==========================
+
+inimigos = [
+    {
+        "Nome": "Peão das Sombras",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 8,
+        "defesa": 3,
+        "forca": 4
+    },
+    {
+        "Nome": "Torre Espectral",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 30,
+        "defesa": 12,
+        "forca": 8
+    },
+    {
+        "Nome": "Cavalo Maldito",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 20,
+        "defesa": 6,
+        "forca": 10
+    },
+    {
+        "Nome": "Bispo Corrupto",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 18,
+        "defesa": 7,
+        "forca": 9
+    },
+    {
+        "Nome": "Peão Infernal",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 10,
+        "defesa": 5,
+        "forca": 6
+    },
+    {
+        "Nome": "Torre Sombria",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 40,
+        "defesa": 15,
+        "forca": 12
+    },
+    {
+        "Nome": "Cavalo do Abismo",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 25,
+        "defesa": 8,
+        "forca": 14
+    },
+    {
+        "Nome": "Bispo do Caos",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 22,
+        "defesa": 10,
+        "forca": 11
+    },
+    {
+        "Nome": "Cavaleiro das Trevas",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 35,
+        "defesa": 10,
+        "forca": 15
+    },
+    {
+        "Nome": "Guardião Abissal",
+        "sprite": "#",  # Placeholder para sprite
+        "hp": 50,
+        "defesa": 18,
+        "forca": 20
     }
 ]
 
@@ -145,9 +239,22 @@ inimigos = [
     { "Nome": "Torre da perdição", "hp": 10, "defesa": 3, "forca": 2}
 ]
 
-
 party = [
-    {}
+    {
+        "Nome": "Player",
+        "sprite": """
+    _    
+   ( )    
+  <_I_>   
+  _|V|_   
+ \__I__/ 
+ /__I__\  
+""",
+        "hp": 10,
+        "defesa": 3,
+        "forca": 5
+    }
 ]
+
 
 
