@@ -1,19 +1,6 @@
-player = {
-    "sprite": """
-    _    
-   (0)    
-  (___)   
-  _|_|_   
- (__8__)  
- /__0__\  
-""",
-    "hp": 10,
-    "defesa": 3,
-    "forca": 5
-}
-
-personagens = {
-    "peao": {
+personagens = [
+    {
+        "Nome": "Peao",
         "sprite": """
     _    
    (_)    
@@ -26,7 +13,8 @@ personagens = {
         "defesa": 3,
         "forca": 5
     },
-    "torre": {
+    {
+        "Nome": "Torre",
         "sprite": """
   _  _  _   
  | || || |  
@@ -41,7 +29,8 @@ personagens = {
         "defesa": 10,
         "forca": 7
     },
-    "cavalo": {
+    {
+        "Nome": "Cavalo",
         "sprite": r"""
   ^^__    
  /  - \_  
@@ -57,7 +46,8 @@ personagens = {
         "defesa": 4,
         "forca": 9
     },
-    "bispo": {
+    {
+        "Nome": "Bispo",
         "sprite": """
    _O_    
   / //\   
@@ -74,7 +64,7 @@ personagens = {
         "defesa": 5,
         "forca": 8
     }
-}
+]
 
 # ==========================
 # Estruturas
@@ -145,10 +135,19 @@ estruturas = {
 # Party (Grupo do Jogador)
 # ==========================
 
-party = {
-    "jogador": player
-}
+
+#boss e inimigos 
+
+inimigos = [
+    { "Nome": "Peão amaldiçoado", "hp": 1, "defesa": 1, "forca": 1},
+    { "Nome": "Cavalo sem cabeça", "hp": 10, "defesa": 5, "forca": 5},
+    { "Nome": "Bispo das trevas", "hp": 50, "defesa": 1, "forca": 20},
+    { "Nome": "Torre da perdição", "hp": 10, "defesa": 3, "forca": 2}
+]
 
 
+party = [
+    {}
+]
 
 
