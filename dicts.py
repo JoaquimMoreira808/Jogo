@@ -1,20 +1,3 @@
-player = [
-    {
-        "Nome": "Player",
-        "sprite": """
-    _    
-   ( )    
-  <_I_>   
-  _|V|_   
- \__I__/ 
- /__I__\  
-""",
-        "hp": 10,
-        "defesa": 3,
-        "forca": 5
-    }
-]
-
 personagens = [
     {
         "Nome": "Peao",
@@ -232,12 +215,7 @@ estruturas = {
 
 #boss e inimigos 
 
-inimigos = [
-    { "Nome": "Peão amaldiçoado", "hp": 1, "defesa": 1, "forca": 1},
-    { "Nome": "Cavalo sem cabeça", "hp": 10, "defesa": 5, "forca": 5},
-    { "Nome": "Bispo das trevas", "hp": 50, "defesa": 1, "forca": 20},
-    { "Nome": "Torre da perdição", "hp": 10, "defesa": 3, "forca": 2}
-]
+
 
 party = [
     {
@@ -252,9 +230,8 @@ party = [
 """,
         "hp": 10,
         "defesa": 3,
-        "forca": 5
+        "forca": 1000000
     }
 ]
 
-
-
+almas = []

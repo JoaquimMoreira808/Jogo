@@ -4,7 +4,9 @@ from arts import *
 from dicts import *
 from lists import *
 from items import *
+
 import random
+import os
 import time
 
 #=================================================================
@@ -37,6 +39,7 @@ def menu():
         print("║ 2. Ver mapa                   ║")
         print("║ 3. Gerenciar itens            ║")
         print("║ 4. Gerenciar party            ║")
+        print("║ 5. Mostrar almas perdidas     ║")
         print("║ 0. Sair                       ║")
         print("╚═══════════════════════════════╝")
 
@@ -51,6 +54,8 @@ def menu():
             abrir_inventario()  
         elif escolha == "4":
             mostrar_party()
+        elif escolha == "5":
+            mostrar_almas()
         elif escolha == "0":
             print("Até a próxima, aventureiro!")
             menu1()
@@ -89,6 +94,20 @@ def mostrar_party():
     print("\n" + sprites)
 
     for personagem in party:
+        print(f"{personagem['Nome']} | HP: {personagem['hp']} | Defesa: {personagem['defesa']} | Força: {personagem['forca']}")
+
+    continuar()
+
+
+#==================================================================
+
+def mostrar_almas():
+    sprites = ""
+    for personagem in almas: 
+        sprites += f"{personagem['sprite']}"  
+    print("\n" + sprites)
+
+    for personagem in almas:
         print(f"{personagem['Nome']} | HP: {personagem['hp']} | Defesa: {personagem['defesa']} | Força: {personagem['forca']}")
 
     continuar()
@@ -208,7 +227,7 @@ class ListaEncadeada:
     def vazia(self):
         return self.inicio is None
 
-# ---------- Função de combate modularizada ----------
+
 
 def combate(party, inimigos):
     # Criação das filas encadeadas para os personagens e inimigos
@@ -217,8 +236,10 @@ def combate(party, inimigos):
         fila_inimigos.adicionar(inimigo)
 
     fila_personagens = ListaEncadeada()
-    for personagem in party:  
+    for personagem in party[::-1]:
+          # percorre de trás pra frente
         fila_personagens.adicionar(personagem)
+
 
     # ---------- Loop principal de combate ----------
 
@@ -231,24 +252,20 @@ def combate(party, inimigos):
 
             if venceu:
                 print("Avançando para o próximo inimigo...\n")
-                # Não coloca o inimigo de volta na fila, pois ele foi derrotado
+                # Não coloca o inimigo de volta na fila, apos derrotado derrotado
             else:
-                if fila_personagens.vazia():  # Verifica se todos os personagens morreram
+                if fila_personagens.vazia():
+                    os.system('cls' if os.name == 'nt' else 'clear')  # Verifica se todos os personagens morreram e da game over
                     print("\nTodos os seus personagens foram derrotados. Derrota!")
-                    return
+                    print("Acabou pro beta")
+                 # ---------- Resultado final ----------
+                elif fila_inimigos.vazia():
+                    print("\nTodos os inimigos foram derrotados! Vitória!")
                 else:
                     print(f"\n{personagem_atual['Nome']} foi derrotado. Próximo personagem entra em combate.")
-                    # O personagem é removido e o próximo entra no combate
-                    continue
-
-    # ---------- Resultado final ----------
-    if fila_inimigos.vazia():
-        print("\nTodos os inimigos foram derrotados! Vitória!")
-    else:
-        print("\nTodos os seus personagens foram derrotados. Derrota!")
-
-
-
+                    morto = party.pop(-1)
+                    almas.append(morto)
+                    
 #  _____                 _           _       
 # /  __ \               | |         | |      
 # | /  \/ ___  _ __ ___ | |__   __ _| |_ ___ 
