@@ -9,7 +9,7 @@ personagens = [
  (_____)  
  /_____\  
 """,
-        "hp": 10,
+        "hp": 15,
         "defesa": 3,
         "forca": 5
     },
@@ -25,9 +25,9 @@ personagens = [
  (_______) 
  /_______\ 
 """,
-        "hp": 25,
-        "defesa": 10,
-        "forca": 7
+        "hp": 20,
+        "defesa": 6,
+        "forca": 3
     },
     {
         "Nome": "Cavalo",
@@ -40,11 +40,11 @@ personagens = [
 <|______\   
  _|____|_   
 (________)
-/________\ 
+ /________\ 
 """,
-        "hp": 18,
-        "defesa": 4,
-        "forca": 9
+        "hp": 12,
+        "defesa": 2,
+        "forca": 7
     },
     {
         "Nome": "Bispo",
@@ -60,11 +60,12 @@ personagens = [
 (_______) 
 /_______\  
 """,
-        "hp": 16,
-        "defesa": 5,
-        "forca": 8
+        "hp": 10,
+        "defesa": 2,
+        "forca": 4
     }
 ]
+
 
 # ==========================
 # Inimigos
@@ -73,75 +74,77 @@ personagens = [
 inimigos = [
     {
         "Nome": "Peão das Sombras",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 8,
-        "defesa": 3,
+        "sprite": "\033[1;31m    _\n   (_)    \n  (___)   \n  _|_|_   \n (_____)  \n /_____\\\033[0m",
+        "hp": 12,
+        "defesa": 2,
         "forca": 4
     },
     {
         "Nome": "Torre Espectral",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 30,
-        "defesa": 12,
-        "forca": 8
+        "sprite": "\033[1;30m  _  _  _   \n | || || |  \n |_______| \n \\__ ___ / \n  |_|___|  \n  |___|_| \n (_______) \n /_______\\\033[0m",
+        "hp": 18,
+        "defesa": 5,
+        "forca": 3
     },
     {
         "Nome": "Cavalo Maldito",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 20,
-        "defesa": 6,
-        "forca": 10
-    },
-    {
-        "Nome": "Bispo Corrupto",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 18,
-        "defesa": 7,
-        "forca": 9
-    },
-    {
-        "Nome": "Peão Infernal",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 10,
-        "defesa": 5,
+        "sprite": "\033[1;31m  ^^__    \n /  - \\_  \n<|    __< \n<|    \\   \n<|     \\  \n<|______\\ \n _|____|_ \n(________)\n/________\\\033[0m",
+        "hp": 14,
+        "defesa": 3,
         "forca": 6
     },
     {
+        "Nome": "Bispo Corrupto",
+        "sprite": "\033[1;30m   _O_    \n  / //\\   \n {     }  \n  \\___/   \n  (___)   \n   |_|    \n  /   \\   \n (_____)  \n(_______) \n/_______\\\033[0m",
+        "hp": 10,
+        "defesa": 2,
+        "forca": 5
+    },
+    {
+        "Nome": "Peão Infernal",
+        "sprite": "\033[0;31m    _\n   (_)    \n  (___)   \n  _|_|_   \n (_____)  \n /_____\\\033[0m",
+        "hp": 13,
+        "defesa": 3,
+        "forca": 5
+    },
+    {
         "Nome": "Torre Sombria",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 40,
-        "defesa": 15,
-        "forca": 12
+        "sprite": "\033[0;30m  _  _  _   \n | || || |  \n |_______| \n \\__ ___ / \n  |_|___|  \n  |___|_| \n (_______) \n /_______\\\033[0m",
+        "hp": 22,
+        "defesa": 6,
+        "forca": 4
     },
     {
         "Nome": "Cavalo do Abismo",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 25,
-        "defesa": 8,
-        "forca": 14
+        "sprite": "\033[0;31m  ^^__    \n /  - \\_  \n<|    __< \n<|    \\   \n<|     \\  \n<|______\\ \n _|____|_ \n(________)\n/________\\\033[0m",
+        "hp": 16,
+        "defesa": 4,
+        "forca": 7
     },
     {
         "Nome": "Bispo do Caos",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 22,
-        "defesa": 10,
-        "forca": 11
+        "sprite": "\033[1;31m   _O_    \n  / //\\   \n {     }  \n  \\___/   \n  (___)   \n   |_|    \n  /   \\   \n (_____)  \n(_______) \n/_______\\\033[0m",
+        "hp": 11,
+        "defesa": 3,
+        "forca": 6
     },
     {
         "Nome": "Cavaleiro das Trevas",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 35,
-        "defesa": 10,
-        "forca": 15
+        "sprite": "\033[1;30m    _    \n   ( )   \n  <_I_>  \n  _|V|_  \n \\__I__/ \n /__I__\\\033[0m",
+        "hp": 22,
+        "defesa": 5,
+        "forca": 8
     },
     {
         "Nome": "Guardião Abissal",
-        "sprite": "#",  # Placeholder para sprite
-        "hp": 50,
-        "defesa": 18,
-        "forca": 20
+        "sprite": "\033[0;31m   _____  \n  /     \\ \n | () () |\n  \\  ^  / \n   |||||  \n   ||||| \033[0m",
+        "hp": 35,
+        "defesa": 6,
+        "forca": 8
     }
 ]
+
+
 
 # ==========================
 # Estruturas

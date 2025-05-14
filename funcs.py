@@ -157,6 +157,7 @@ def acampamento_aventureiros():
 #  \____/\___/|_| |_| |_|_.__/ \__,_|\__\___|
                                            
 
+# ---------- Funções de batalha ----------
 def calcular_dano(forca, defesa):
     dano = forca - defesa
     return max(1, dano)
@@ -168,24 +169,20 @@ def batalha(personagem, inimigo):
     hp_personagem = personagem["hp"]
     hp_inimigo = inimigo["hp"]
 
-    print(f"\n{personagem['Nome']} encontrou: {inimigo['Nome']}!")
-    print(personagem["sprite"])
-
     while hp_personagem > 0 and hp_inimigo > 0:
-        print("\n--- TURNO ---")
         if fila_turnos[turno_atual] == "jogador":
             digitar(f"\nVez de {personagem['Nome']} atacar!")
             dano = calcular_dano(personagem["forca"], inimigo["defesa"])
             hp_inimigo -= dano
             digitar(f"{personagem['Nome']} causou {dano} de dano. HP do inimigo: {max(hp_inimigo, 0)}")
         else:
-            print("Turno do Inimigo!")
+            digitar(f"\n--- TURNO DO INIMIGO ---")
             dano = calcular_dano(inimigo["forca"], personagem["defesa"])
             hp_personagem -= dano
             digitar(f"{inimigo['Nome']} causou {dano} de dano. Seu HP: {max(hp_personagem, 0)}")
 
         turno_atual = (turno_atual + 1) % len(fila_turnos)
-        continuar()
+        input("\nPressione Enter para continuar...")
 
     if hp_personagem > 0:
         digitar(f"\nVocê derrotou {inimigo['Nome']}!")
@@ -195,8 +192,7 @@ def batalha(personagem, inimigo):
         digitar(f"\n{personagem['Nome']} foi derrotado pelo {inimigo['Nome']}...")
         return False
 
-# ---------- Funções de lista encadeada para revezamento de personagens e inimigos ----------
-
+# ---------- Estrutura de lista encadeada ----------
 class Nodo:
     def __init__(self, valor):
         self.valor = valor
@@ -227,44 +223,59 @@ class ListaEncadeada:
     def vazia(self):
         return self.inicio is None
 
-
-
+# ---------- Função de combate geral ----------
 def combate(party, inimigos):
-    # Criação das filas encadeadas para os personagens e inimigos
     fila_inimigos = ListaEncadeada()
     for inimigo in inimigos:
         fila_inimigos.adicionar(inimigo)
 
     fila_personagens = ListaEncadeada()
     for personagem in party[::-1]:
-          # percorre de trás pra frente
         fila_personagens.adicionar(personagem)
 
+    almas = []
 
-    # ---------- Loop principal de combate ----------
+    # ---------- Introdução ao combate ----------
+    digitar("\nVocê encontrou um grupo de inimigos!")
+    digitar("\nSua party:")
+    for personagem in party:
+        digitar(f"- {personagem['Nome']}")
+        if "sprite" in personagem:
+            print(personagem["sprite"])
 
+    digitar("\nInimigos:")
+    for inimigo in inimigos:
+        digitar(f"- {inimigo['Nome']}")
+        if "sprite" in inimigo:
+            print(inimigo["sprite"])
+
+    input("\nPressione Enter para começar a batalha...")
+
+    # ---------- Loop de combate ----------
     while not fila_inimigos.vazia() and not fila_personagens.vazia():
-        personagem_atual = fila_personagens.remover()  # Retira o personagem da fila
-        inimigo_atual = fila_inimigos.remover()  # Retira o inimigo da fila
-        
-        if personagem_atual and inimigo_atual:
-            venceu = batalha(personagem_atual, inimigo_atual)
+        personagem_atual = fila_personagens.remover()
+        inimigo_atual = fila_inimigos.remover()
 
-            if venceu:
-                print("Avançando para o próximo inimigo...\n")
-                # Não coloca o inimigo de volta na fila, apos derrotado derrotado
-            else:
-                if fila_personagens.vazia():
-                    os.system('cls' if os.name == 'nt' else 'clear')  # Verifica se todos os personagens morreram e da game over
-                    print("\nTodos os seus personagens foram derrotados. Derrota!")
-                    print("Acabou pro beta")
-                 # ---------- Resultado final ----------
-                elif fila_inimigos.vazia():
-                    print("\nTodos os inimigos foram derrotados! Vitória!")
-                else:
-                    print(f"\n{personagem_atual['Nome']} foi derrotado. Próximo personagem entra em combate.")
-                    morto = party.pop(-1)
-                    almas.append(morto)
+        if batalha(personagem_atual, inimigo_atual):
+            # Personagem venceu: volta pra fila
+            fila_personagens.adicionar(personagem_atual)
+        else:
+            # Personagem perdeu: vai pra lista de almas
+            digitar(f"\n{personagem_atual['Nome']} foi derrotado. Próximo personagem entra em combate.")
+            if personagem_atual in party:
+                party.remove(personagem_atual)
+            almas.append(personagem_atual)
+            
+            # Inimigo venceu: volta pra fila
+            fila_inimigos.adicionar(inimigo_atual)
+
+    # ---------- Resultado final ----------
+    if fila_inimigos.vazia():
+        digitar("\nTodos os inimigos foram derrotados! Vitória!")
+    elif fila_personagens.vazia():
+        os.system('cls' if os.name == 'nt' else 'clear')
+        digitar("\nTodos os seus personagens foram derrotados. Derrota!")
+        digitar("Acabou pro beta")
                     
 #  _____                 _           _       
 # /  __ \               | |         | |      
@@ -317,18 +328,16 @@ def achar_estrutura():
 def encontrar_inimigo():
     party_inimiga = []
     inimigos_disponiveis = inimigos.copy()
-
     for _ in range(len(party)):
         inimigo_aleatorio = random.choice(inimigos_disponiveis)
         party_inimiga.append(inimigo_aleatorio)
         inimigos_disponiveis.remove(inimigo_aleatorio)
-        
     combate(party, party_inimiga)
 
 #==================================================================
 
 acoes = [acampamento_aventureiros, achar_estrutura, encontrar_inimigo]
-pesos = [1, 3, 2]
+pesos = [1, 2, 3]
 
 
 def seguir_caminho():
