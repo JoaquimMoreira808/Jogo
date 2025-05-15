@@ -238,3 +238,5 @@ party = [
 ]
 
 almas = []
+
+bestiario = []

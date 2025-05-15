@@ -40,6 +40,7 @@ def menu():
         print("║ 3. Gerenciar itens            ║")
         print("║ 4. Gerenciar party            ║")
         print("║ 5. Mostrar almas perdidas     ║")
+        print("║ 6. Visualizar Bestiario       ║")
         print("║ 0. Sair                       ║")
         print("╚═══════════════════════════════╝")
 
@@ -56,6 +57,8 @@ def menu():
             mostrar_party()
         elif escolha == "5":
             mostrar_almas()
+        elif escolha == "6":
+            visualizar_bestiario()
         elif escolha == "0":
             print("Até a próxima, aventureiro!")
             menu1()
@@ -102,6 +105,10 @@ def mostrar_party():
 #==================================================================
 
 def mostrar_almas():
+    if not almas:
+        print("\nNão há nenhuma alma perdida.")
+        continuar()
+        return
     sprites = ""
     for personagem in almas: 
         sprites += f"{personagem['sprite']}"  
@@ -112,6 +119,23 @@ def mostrar_almas():
 
     continuar()
 
+
+#==================================================================
+def visualizar_bestiario():
+    if not bestiario:
+        print("\nVocê ainda não derrotou nenhum inimigo.")
+        continuar()
+        return
+    
+    sprites = ""
+    for inimigo in bestiario: 
+        sprites += f"{inimigo['sprite']}"  
+    print("\n" + sprites)
+
+    for inimigo in bestiario:
+        print(f"{inimigo['Nome']} | HP: {inimigo['hp']} | Defesa: {inimigo['defesa']} | Força: {inimigo['forca']}")
+    
+    continuar()
 
 #==================================================================
 
@@ -259,6 +283,9 @@ def combate(party, inimigos):
         if batalha(personagem_atual, inimigo_atual):
             # Personagem venceu: volta pra fila
             fila_personagens.adicionar(personagem_atual)
+
+            if inimigo_atual not in bestiario:
+                bestiario.append(inimigo_atual)
         else:
             # Personagem perdeu: vai pra lista de almas
             digitar(f"\n{personagem_atual['Nome']} foi derrotado. Próximo personagem entra em combate.")
