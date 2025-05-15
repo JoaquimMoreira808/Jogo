@@ -5,9 +5,18 @@ from dicts import *
 from lists import *
 from items import *
 
+import copy
 import random
 import os
 import time
+
+#=================================================================
+
+def limpar_terminal():
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
 
 #=================================================================
 
@@ -18,15 +27,48 @@ def digitar(texto: str, delay: float = 0.03):
     print()
 
 #=================================================================
-#Varíavel global pra controle do menu
+#Varíaveis globais
 
 starts = 1
+
+almas = []
+
+bestiario = []
+
 #=================================================================
 
 def continuar():
-    input("Pressione qualquer tecla para continuar...")
+    input("...")
 
 #=================================================================
+
+def debug():
+    while True:
+        print("\n╔═══════════════════════════════╗")
+        print("║         MENU PRINCIPAL        ║")
+        print("╠═══════════════════════════════╣")
+        print("║ 1. Combate                    ║")
+        print("║ 2. Encontrar estrutura        ║")
+        print("║ 3. Acampamento                ║")
+        print("║ 0. Menu                       ║")
+        print("╚═══════════════════════════════╝")
+
+
+        escolha = input("Escolha uma opção: ")
+
+        if escolha == "1":
+            encontrar_inimigo()
+        elif escolha == "0":
+            menu()
+        elif escolha == "2":
+            achar_estrutura
+        elif escolha == "3":
+            acampamento_aventureiros()  
+        else:
+            print("Opção inválida. Tente novamente.")
+
+#=================================================================
+
 
 # Menu, é um menu :I
 
@@ -59,6 +101,8 @@ def menu():
             mostrar_almas()
         elif escolha == "6":
             visualizar_bestiario()
+        elif escolha == "ze":
+            debug()
         elif escolha == "0":
             print("Até a próxima, aventureiro!")
             menu1()
@@ -92,32 +136,37 @@ def start():
 
 def mostrar_party():
     sprites = ""
-    for personagem in party: 
-        sprites += f"{personagem['sprite']}"  
+    current = head
+    while current:
+        sprites += current.data['sprite']
+        current = current.next
     print("\n" + sprites)
 
-    for personagem in party:
-        print(f"{personagem['Nome']} | HP: {personagem['hp']} | Defesa: {personagem['defesa']} | Força: {personagem['forca']}")
+    current = head
+    while current:
+        p = current.data
+        print(f"{p['Nome']} | HP: {p['hp']} | Defesa: {p['defesa']} | Força: {p['forca']}")
+        current = current.next
 
     continuar()
 
 
 #==================================================================
 
+
 def mostrar_almas():
     if not almas:
-        print("\nNão há nenhuma alma perdida.")
+        print("O frasco de almas pulsa... nenhum dos teus caiu no frias garras da escuridão.")
+    else:
+        sprites = ""
+        for personagem in almas:
+            sprites += f"{personagem['sprite']}\n"
+        print("\n" + sprites)
+
+        for personagem in almas:
+            print(f"{personagem['Nome']} | HP: {personagem['hp']} | Defesa: {personagem['defesa']} | Força: {personagem['forca']}")
+
         continuar()
-        return
-    sprites = ""
-    for personagem in almas: 
-        sprites += f"{personagem['sprite']}"  
-    print("\n" + sprites)
-
-    for personagem in almas:
-        print(f"{personagem['Nome']} | HP: {personagem['hp']} | Defesa: {personagem['defesa']} | Força: {personagem['forca']}")
-
-    continuar()
 
 
 #==================================================================
@@ -126,20 +175,17 @@ def visualizar_bestiario():
         print("\nVocê ainda não derrotou nenhum inimigo.")
         continuar()
         return
-    
-    sprites = ""
-    for inimigo in bestiario: 
-        sprites += f"{inimigo['sprite']}"  
-    print("\n" + sprites)
 
+    print("\n==== BESTIÁRIO ====\n")
     for inimigo in bestiario:
-        print(f"{inimigo['Nome']} | HP: {inimigo['hp']} | Defesa: {inimigo['defesa']} | Força: {inimigo['forca']}")
-    
+        print(inimigo["sprite"])
+        print(f"{inimigo['Nome']}")
+        print(f"HP: {inimigo['hp']} | Defesa: {inimigo['defesa']} | Força: {inimigo['forca']}")
+        print("-" * 30)
+
     continuar()
 
 #==================================================================
-
-import random
 
 def acampamento_aventureiros():
     digitar("um acampamento. A fogueira bruxuleia, iluminando")
@@ -164,153 +210,178 @@ def acampamento_aventureiros():
     while escolha not in opcoes:
         escolha = input("\nEscolha com sabedoria (1, 2 ou 3): ").strip()
 
-    escolhido = opcoes[escolha]
-    party.append(escolhido)
+    # Aqui vem a mágica: cópia profunda para ter instância independente
+    escolhido_original = opcoes[escolha]
+    escolhido = copy.deepcopy(escolhido_original)
+
+    global tail  # garantir que acessa variável global
+    tail = add_node(tail, escolhido)  # adiciona na lista duplamente encadeada
+
     digitar(f"{escolhido['Nome']} agora faz parte do seu grupo.")
-    
     continuar()
+
+#==================================================================
+
+#Lista encadeada e afins
+
+class Node:
+    def __init__(self, data):
+        self.prev = None
+        self.data = data
+        self.next = None
+
+def add_node(tail, personagem):
+    novo_node = Node(personagem)
+    tail.next = novo_node
+    novo_node.prev = tail
+    return novo_node
+
+def remover_node(head, node):
+    # Se o nó a ser removido for o primeiro (head)
+    if node.prev:
+        node.prev.next = node.next
+    else:
+        # Se for o primeiro, atualizamos o head
+        head = node.next
+
+    if node.next:
+        node.next.prev = node.prev
+
+    node.prev = None
+    node.next = None
+    return head
+
+
+def obter_ultimo_node(head):
+    current = head
+    while current.next:
+        current = current.next
+    return current
+
+def tamanho_lista(head):
+    count = 0
+    current = head
+    while current:
+        count += 1
+        current = current.next
+    return count
 
 
 #==================================================================
 
-#  _____                 _           _       
-# /  __ \               | |         | |      
-# | /  \/ ___  _ __ ___ | |__   __ _| |_ ___ 
-# | |    / _ \| '_ ` _ \| '_ \ / _` | __/ _ \
-# | \__/\ (_) | | | | | | |_) | (_| | ||  __/
-#  \____/\___/|_| |_| |_|_.__/ \__,_|\__\___|
-                                           
+#Definição de party
 
-# ---------- Funções de batalha ----------
-def calcular_dano(forca, defesa):
-    dano = forca - defesa
-    return max(1, dano)
+head = Node(copy.deepcopy(player))
+tail = head
+#==================================================================
 
-def batalha(personagem, inimigo):
-    fila_turnos = ["jogador", "inimigo"]
-    turno_atual = 0
+def atacar(atacante, defensor):
+    dano = max(atacante.data['forca'] - defensor.data['defesa'], 1)  
+    defensor.data['hp'] -= dano
+    print(f"{atacante.data['Nome']} ataca {defensor.data['Nome']} e causa {dano} de dano!")
+    if defensor.data['hp'] <= 0:
+        print(f"{defensor.data['Nome']} foi derrotado!")
 
-    hp_personagem = personagem["hp"]
-    hp_inimigo = inimigo["hp"]
+def adicionar_alma(head_almas, node):
+    node.next = head_almas
+    return node  
 
-    while hp_personagem > 0 and hp_inimigo > 0:
-        if fila_turnos[turno_atual] == "jogador":
-            digitar(f"\nVez de {personagem['Nome']} atacar!")
-            dano = calcular_dano(personagem["forca"], inimigo["defesa"])
-            hp_inimigo -= dano
-            digitar(f"{personagem['Nome']} causou {dano} de dano. HP do inimigo: {max(hp_inimigo, 0)}")
-        else:
-            digitar(f"\n--- TURNO DO INIMIGO ---")
-            dano = calcular_dano(inimigo["forca"], personagem["defesa"])
-            hp_personagem -= dano
-            digitar(f"{inimigo['Nome']} causou {dano} de dano. Seu HP: {max(hp_personagem, 0)}")
+def limpar_tela():
+    os.system('cls' if os.name == 'nt' else 'clear')
+def combate(head_player, head_inimigos, almas):
+    def copiar_lista(head):
+        nova_head = None
+        anterior_novo = None
+        atual_original = head
+        while atual_original:
+            copia_data = dict(atual_original.data)  # Cria uma cópia dos dados
+            novo_node = Node(copia_data)
+            if anterior_novo:
+                anterior_novo.next = novo_node
+            else:
+                nova_head = novo_node
+            anterior_novo = novo_node
+            atual_original = atual_original.next
+        return nova_head
 
-        turno_atual = (turno_atual + 1) % len(fila_turnos)
-        input("\nPressione Enter para continuar...")
+    # Cópias para o combate
+    combate_player = copiar_lista(head_player)
+    combate_inimigos = copiar_lista(head_inimigos)
 
-    if hp_personagem > 0:
-        digitar(f"\nVocê derrotou {inimigo['Nome']}!")
-        personagem["hp"] = hp_personagem 
-        return True
-    else:
-        digitar(f"\n{personagem['Nome']} foi derrotado pelo {inimigo['Nome']}...")
-        return False
+    limpar_tela()
+    print("=" * 27)
+    print("        Início do Combate       ")
+    print("=" * 27)
+    print()
 
-# ---------- Estrutura de lista encadeada ----------
-class Nodo:
-    def __init__(self, valor):
-        self.valor = valor
-        self.proximo = None
+    while combate_player and combate_inimigos:
+        # Atacante e defensor são os primeiros nodes das listas
+        atacante = combate_player
+        defensor = combate_inimigos
 
-class ListaEncadeada:
-    def __init__(self):
-        self.inicio = None
-        self.fim = None
+        # Ataca o defensor
+        atacar(atacante, defensor)
+        if defensor.data['hp'] <= 0:
+            print(f"{defensor.data['Nome']} foi derrotado!")
+            combate_inimigos = remover_node(combate_inimigos, defensor)  # Remove o inimigo derrotado
+            time.sleep(1.5)
+            continue  # Continúa para o próximo round
 
-    def adicionar(self, valor):
-        novo_nodo = Nodo(valor)
-        if self.fim:
-            self.fim.proximo = novo_nodo
-        else:
-            self.inicio = novo_nodo
-        self.fim = novo_nodo
+        continuar()
 
-    def remover(self):
-        if self.inicio is None:
-            return None
-        valor = self.inicio.valor
-        self.inicio = self.inicio.proximo
-        if self.inicio is None:
-            self.fim = None
-        return valor
+        # O defensor agora ataca o atacante
+        atacar(defensor, atacante)
+        continuar()
 
-    def vazia(self):
-        return self.inicio is None
+        if atacante.data['hp'] <= 0:
+            print(f"{atacante.data['Nome']} foi derrotado!")
 
-# ---------- Função de combate geral ----------
-def combate(party, inimigos):
-    fila_inimigos = ListaEncadeada()
-    for inimigo in inimigos:
-        fila_inimigos.adicionar(inimigo)
+            # Guarda alma do personagem derrotado
+            morto = copy.deepcopy(atacante.data)
+            morto['hp'] = player['hp']  # Restaura o HP original
+            almas.append(morto)
 
-    fila_personagens = ListaEncadeada()
-    for personagem in party[::-1]:
-        fila_personagens.adicionar(personagem)
+            # Remove o jogador derrotado da lista
+            combate_player = remover_node(combate_player, atacante)
+            time.sleep(1.5)
+            continue  # Continua para o próximo round
 
+        limpar_tela()
+
+        print("\n--- Status dos Personagens ---\n")
+        print("Seu grupo:")
+        current = combate_player
+        while current:
+            print(f"{current.data['Nome']:<12} | HP: {current.data['hp']} ♥")
+            current = current.next
+
+        print("\nInimigos:")
+        current = combate_inimigos
+        while current:
+            print(f"{current.data['Nome']:<20} | HP: {current.data['hp']} ♥")
+            current = current.next
+
+        continuar()
+
+    limpar_tela()
+    if not combate_player:
+        gameover()
+        return
+
+    print("Todos os inimigos foram derrotados. Você venceu o combate!")
+    continuar()
+#==================================================================
+
+def gameover():
+    global head, tail, almas
+    limpar_terminal()
+    print(gameover_art)
+    continuar()
+    head = Node(copy.deepcopy(player))
+    tail = head
     almas = []
+    menu1()
 
-    # ---------- Introdução ao combate ----------
-    digitar("\nVocê encontrou um grupo de inimigos!")
-    digitar("\nSua party:")
-    for personagem in party:
-        digitar(f"- {personagem['Nome']}")
-        if "sprite" in personagem:
-            print(personagem["sprite"])
-
-    digitar("\nInimigos:")
-    for inimigo in inimigos:
-        digitar(f"- {inimigo['Nome']}")
-        if "sprite" in inimigo:
-            print(inimigo["sprite"])
-
-    input("\nPressione Enter para começar a batalha...")
-
-    # ---------- Loop de combate ----------
-    while not fila_inimigos.vazia() and not fila_personagens.vazia():
-        personagem_atual = fila_personagens.remover()
-        inimigo_atual = fila_inimigos.remover()
-
-        if batalha(personagem_atual, inimigo_atual):
-            # Personagem venceu: volta pra fila
-            fila_personagens.adicionar(personagem_atual)
-
-            if inimigo_atual not in bestiario:
-                bestiario.append(inimigo_atual)
-        else:
-            # Personagem perdeu: vai pra lista de almas
-            digitar(f"\n{personagem_atual['Nome']} foi derrotado. Próximo personagem entra em combate.")
-            if personagem_atual in party:
-                party.remove(personagem_atual)
-            almas.append(personagem_atual)
-            
-            # Inimigo venceu: volta pra fila
-            fila_inimigos.adicionar(inimigo_atual)
-
-    # ---------- Resultado final ----------
-    if fila_inimigos.vazia():
-        digitar("\nTodos os inimigos foram derrotados! Vitória!")
-    elif fila_personagens.vazia():
-        os.system('cls' if os.name == 'nt' else 'clear')
-        digitar("\nTodos os seus personagens foram derrotados. Derrota!")
-        digitar("Acabou pro beta")
-                    
-#  _____                 _           _       
-# /  __ \               | |         | |      
-# | /  \/ ___  _ __ ___ | |__   __ _| |_ ___ 
-# | |    / _ \| '_ ` _ \| '_ \ / _` | __/ _ \
-# | \__/\ (_) | | | | | | |_) | (_| | ||  __/
-#  \____/\___/|_| |_| |_|_.__/ \__,_|\__\___|
-                                           
 #==================================================================
 
 def achar_estrutura():
@@ -342,9 +413,11 @@ def achar_estrutura():
                 inventario.append(item_encontrado)
                 digitar(f"Você encontrou um item: {item_encontrado.nome}!")
                 digitar(f"{item_encontrado.descricao}")
+                break
 
             else:
                 digitar("Você vasculha tudo, mais não encontra nada de útil.")
+                break
 
         else:
             print("Escolha uma opção válida.")
@@ -353,19 +426,41 @@ def achar_estrutura():
 #==================================================================
 
 def encontrar_inimigo():
-    party_inimiga = []
+    mensagem = random.choice(inimigos_frases)
+    digitar(f"\n{mensagem}\n")
+
     inimigos_disponiveis = inimigos.copy()
-    for _ in range(len(party)):
+    count = tamanho_lista(head)
+
+    primeiro_inimigo = random.choice(inimigos_disponiveis)
+    inimigos_disponiveis.remove(primeiro_inimigo)
+    head_inimigos = Node(primeiro_inimigo)
+    tail_inimigos = head_inimigos
+
+    print(f"{primeiro_inimigo['Nome']}")
+    print(f"  HP    : {primeiro_inimigo['hp']}")
+    print(f"  Força : {primeiro_inimigo['forca']}")
+    print(f"  Defesa: {primeiro_inimigo['defesa']}\n")
+
+    for _ in range(count - 1):
         inimigo_aleatorio = random.choice(inimigos_disponiveis)
-        party_inimiga.append(inimigo_aleatorio)
         inimigos_disponiveis.remove(inimigo_aleatorio)
-    combate(party, party_inimiga)
+        tail_inimigos = add_node(tail_inimigos, inimigo_aleatorio)
+
+        print(f"{inimigo_aleatorio['Nome']}")
+        print(f"  HP    : {inimigo_aleatorio['hp']}")
+        print(f"  Força : {inimigo_aleatorio['forca']}")
+        print(f"  Defesa: {inimigo_aleatorio['defesa']}\n")
+
+    input("\Iniciar o combate...\n")
+    limpar_terminal()
+    combate(head, head_inimigos, almas)
+
 
 #==================================================================
 
 acoes = [acampamento_aventureiros, achar_estrutura, encontrar_inimigo]
-pesos = [1, 2, 3]
-
+pesos = [1, 1, 1]
 
 def seguir_caminho():
     mensagem = random.choice(inicios_caminho)
@@ -374,7 +469,6 @@ def seguir_caminho():
     evento()
 
 #==================================================================    
-
 inventario = []
 
 itens_possiveis = [
@@ -396,5 +490,4 @@ def abrir_inventario():
         print(f"{i}. {item.nome} — {item.descricao}")
 
     continuar()
-
-    #================================================================== 
+#================================================================== 
