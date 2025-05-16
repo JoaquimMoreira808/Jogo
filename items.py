@@ -21,14 +21,14 @@ frasco_piche = Item(
     "Frasco de Piche",
     "Reduz temporariamente a velocidade do inimigo. ",
     "Um frasco de piche pegajoso. Durante cercos, óleo fervente ou piche eram usados para atrasar inimigos.",
-    raridade="Raro"
+    raridade="Comum"
 )
 
 unguento_curandeiro = Item(
     "Unguento do Curandeiro",
     "Restaura um pouco de HP. ",
     "Pomada medicinal usada em batalhas medievais. Curandeiros utilizavam ervas naturais para tratar ferimentos.",
-    raridade="Comum"
+    raridade="Incomum"
 )
 
 polvora_negra = Item(
@@ -46,14 +46,12 @@ flechas_incendiarias = Item(
 )
 
 espada_rei_caido = Item(
-    nome="Espada do Rei Caído",
-    descricao_curta="Espada lendária que causa 30 de dano e ignora armadura.",
-    descricao_longa=(
-        "A Espada do Rei Caído pertenceu a um antigo monarca que enlouqueceu durante a guerra. "
-        "Forjada com aço negro e encantada por um feiticeiro traidor, ela foi selada após destruir um exército inteiro. "
-        "Diz-se que sua lâmina carrega o lamento das almas que tombaram diante dela."
-    ),
-    raridade="lendário"
+    "Espada do Rei Caído",
+    "Espada lendária que causa 30 de dano e ignora armadura.",
+    "A Espada do Rei Caído pertenceu a um antigo monarca que enlouqueceu durante a guerra.\n"
+    "Forjada com aço negro e encantada por um feiticeiro traidor, ela foi selada após destruir um exército inteiro.\n"
+    "Diz-se que 'Sua lâmina carrega o lamento das almas que tombaram diante dela.'",
+    raridade="Lendário"
 )
 
 #raridade dos itens
@@ -71,4 +69,5 @@ itens_possiveis_encontrar = {
     "unguento_curandeiro": unguento_curandeiro,
     "polvora_negra": polvora_negra,
     "flechas_incendiarias": flechas_incendiarias,
+    "espada_rei_caido": espada_rei_caido,
 }
