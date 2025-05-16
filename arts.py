@@ -19,6 +19,23 @@ menu_art = ("""
                           --''''             '            .' """)
 
 
+fogueira_art = ("""
+                            (                 
+                              )               
+                            (  (              
+                            )    )            
+                          (     (  
+                          ) /\   )
+                          (  // | (`'      
+                        _ -.;_/ \\--._      
+                      (_;-// | \ \-'. _)    
+                      ( `.__ _  _____,')
+                        `'(_ )_)(_)_)
+                
+~ A fogueira crepita suavemente, lançando sombras nas árvores ao redor. ~
+                """)
+
+
 gameover_art = ("""
                _____                        _____                
               |  __ \                      |  _  |               
@@ -28,7 +45,7 @@ gameover_art = ("""
                \____/\__,_|_| |_| |_|\___|  \___/  \_/ \___|_|   
             
 
-              “Não temas, meu peão, a chama que arde dentro de ti,
+              “Não temas, meu peão... a chama que arde dentro de ti,
              não foi extinta pelas sombras que rondam o tabuleiro.”
             
                                    ()

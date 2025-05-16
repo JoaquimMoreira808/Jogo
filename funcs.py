@@ -4,7 +4,6 @@ from arts import *
 from dicts import *
 from lists import *
 from items import *
-
 import copy
 import random
 import os
@@ -397,30 +396,46 @@ def achar_estrutura():
         print("╠═══════════════════════════════╣")
         print("║ 1. Sair dali                  ║")
         print("║ 2. Explorar estrutura         ║")
+        print("║ 3. Montar uma fogueira        ║")
         print("╚═══════════════════════════════╝")
         escolha = input("Escolha uma opção (1 ou 2): ").strip()
 
+        #player sai da estrutura
         if escolha == "1":
             digitar("Você decide não se arriscar e parte em silêncio...")
             break
+
+        #player decide explorar a estrutura
         elif escolha == "2":
             digitar("Você explora os arredores com cautela...")
             
             chance = random.choices(["item", "nada"], weights=[70, 30], k=1)[0]
             
             if chance == "item":
-                item_encontrado = random.choice(itens_possiveis)
+                itens = list(itens_possiveis_encontrar.values())
+                pesos = [pesos_raridade.get(item.raridade, 1) for item in itens]
+                item_encontrado = random.choices(itens, weights=pesos, k=1)[0]
+                
                 inventario.append(item_encontrado)
                 digitar(f"Você encontrou um item: {item_encontrado.nome}!")
-                digitar(f"{item_encontrado.descricao}")
-                break
+                digitar(f"{item_encontrado.descricao_curta}")
+
+                digitar("Você guarda o item com cuidado antes de seguir seu caminho.")
+                return
 
             else:
-                digitar("Você vasculha tudo, mais não encontra nada de útil.")
+                digitar("Você vasculha tudo, mas não encontra nada de útil.")
                 break
 
+        #player decide monter uma fogueira
+        elif escolha == "3":
+            digitar ("Você monta uma pequena fogueira com galhos secos ao redor...")
+            digitar("O calor do fogo traz um alívio momentâneo do frio da noite.")
+            print(fogueira_art)
+            break
+
         else:
-            print("Escolha uma opção válida.")
+            print("Essa opção não parece válida. Tente novamente.")
 
 
 #==================================================================
@@ -471,23 +486,36 @@ def seguir_caminho():
 #==================================================================    
 inventario = []
 
-itens_possiveis = [
-    item("Unguento do Curandeiro", "Cura 15 de HP."),
-    item("Frasco de Piche", "Reduz a velocidade do inimigo."),
-    item("Pólvora Negra", "Causa 5 de dano ao inimigo."),
-    item("Flechas Incendiárias", "Causa dano contínuo leve."),
-    item("Mapa Roubado", "Mostra a localização de um acampamento.")
-]
-
 def abrir_inventario():
     if not inventario:
         print("\nSeu inventário está vazio.")
         continuar()
         return
 
-    print("\nInventário:")
-    for i, item in enumerate(inventario, 1):
-        print(f"{i}. {item.nome} — {item.descricao}")
+    while True:
+        print("\nInventário:")
+        for i, item in enumerate(inventario, 1):
+            print(f"{i}. {item.nome} — {item.descricao_curta}")
+
+        print(f"{len(inventario) + 1}. Voltar")
+
+        escolha = input("\nEscolha um item para ver mais detalhes ou voltar:")
+
+        if not escolha.isdigit():
+            print("Escolha um item válido.")
+            continue
+
+        escolha = int(escolha)
+
+        if  escolha == len(inventario) + 1:
+            break
+        elif 1 <= escolha <= len(inventario):
+            item_selecionado = inventario[escolha - 1]
+            print(f"\n{item_selecionado.nome} - {item_selecionado.descricao_longa}")
+            input("\nPresione Enter para continuar...")
+        else:
+            print("Escolha inválida.")
+
 
     continuar()
 #================================================================== 
