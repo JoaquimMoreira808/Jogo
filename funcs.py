@@ -43,14 +43,14 @@ def continuar():
 
 def debug():
     while True:
-        print("\n╔═══════════════════════════════╗")
-        print("║         MENU PRINCIPAL        ║")
-        print("╠═══════════════════════════════╣")
-        print("║ 1. Combate                    ║")
-        print("║ 2. Encontrar estrutura        ║")
-        print("║ 3. Acampamento                ║")
-        print("║ 0. Menu                       ║")
-        print("╚═══════════════════════════════╝")
+        print("╔════════════════════════════════╗")
+        print("║         MENU PRINCIPAL         ║")
+        print("╠════════════════════════════════╣")
+        print("║ 1. Combate                     ║")
+        print("║ 2. Encontrar estrutura         ║")
+        print("║ 3. Acampamento                 ║")
+        print("║ 0. Menu                        ║")
+        print("╚════════════════════════════════╝")
 
 
         escolha = input("Escolha uma opção: ")
@@ -60,7 +60,7 @@ def debug():
         elif escolha == "0":
             menu()
         elif escolha == "2":
-            achar_estrutura
+            achar_estrutura()
         elif escolha == "3":
             acampamento_aventureiros()  
         else:
@@ -68,26 +68,21 @@ def debug():
 
 #=================================================================
 
-
 # Menu, é um menu :I
-
 def menu():
     while True:
         print("\n╔═══════════════════════════════╗")
         print("║         MENU PRINCIPAL        ║")
         print("╠═══════════════════════════════╣")
-        print("║ 1. Seguir caminho             ║")
-        print("║ 2. Ver mapa                   ║")
-        print("║ 3. Gerenciar itens            ║")
-        print("║ 4. Gerenciar party            ║")
-        print("║ 5. Mostrar almas perdidas     ║")
-        print("║ 6. Visualizar Bestiario       ║")
-        print("║ 0. Sair                       ║")
+        print("║ 1. ➤ Seguir o caminho         ║")
+        print("║ 2. ➤ Mapa do tabuleiro        ║")
+        print("║ 3. ➤ Ver bolsa de itens       ║")
+        print("║ 4. ➤ Sua guilda               ║")
+        print("║ 5. ➤ Frasco de almas          ║")
+        print("║ 6. ➤ Visualizar Bestiario     ║")
+        print("║ 0. ➤ Sair                     ║")
         print("╚═══════════════════════════════╝")
-
-
         escolha = input("Escolha uma opção: ")
-
         if escolha == "1":
             seguir_caminho()
         elif escolha == "2":
@@ -107,6 +102,7 @@ def menu():
             menu1()
         else:
             print("Opção inválida. Tente novamente.")
+            continuar()
 
 #=================================================================
 
@@ -124,11 +120,13 @@ def start():
         menu()
     else:
         starts += 1
-        print("""\n""")
-        digitar("Os antigos contam sobre uma coroa de poder arcano infinito,")
-        digitar("contam que o objeto habita a última casa do tabuleiro.") 
-        digitar("Aqueles corajosos o suficiente mudariam a história,")
-        digitar("mas ninguém esperava que o impossível fosse feito por um peão.")
+        print("\n")
+
+        digitar("Ahh... meu querido peão.")
+        digitar("Ainda moves teus passos na penumbra do início.")
+        digitar("A coroa, forjada no silêncio da última casa, espera.")
+        digitar("Outros tombaram tentando alcançá-la...")
+        digitar("Mas tu, pequeno e esquecido... és a peça que o próprio jogo teme.")
         menu()
 
 #=================================================================
@@ -198,6 +196,25 @@ def gameover():
     menu1()
 
 #==================================================================
+
+import random
+
+def gerar_amuletos():
+    atributos_possiveis = ['força', 'resistência', 'vida', 'capacidade']
+    escolhidos = random.sample(atributos_possiveis, 2)
+
+    amuleto = {
+        'nome': 'Amuleto Misterioso',
+        'descricao_curta': f"+{escolhidos[0]} / +{escolhidos[1]}",
+        'descricao_longa': f"Este amuleto confere bônus em {escolhidos[0]} e {escolhidos[1]}. Suas origens são incertas, mas emana uma energia ancestral.",
+        'atributos': {escolhidos[0]: random.randint(1, 5), escolhidos[1]: random.randint(1, 5)}
+    }
+
+    return amuleto
+
+    
+#==================================================================
+
 def acampamento_aventureiros():
     global head, tail
     # Recalcula o tail para garantir que aponta ao último nó válido
@@ -304,15 +321,13 @@ def atacar(atacante, defensor):
     dano = max(atacante.data['forca'] - defensor.data['defesa'], 1)  
     defensor.data['hp'] -= dano
     print(f"{atacante.data['Nome']} ataca {defensor.data['Nome']} e causa {dano} de dano!")
-    if defensor.data['hp'] <= 0:
-        print(f"{defensor.data['Nome']} foi derrotado!")
 
 def adicionar_alma(head_almas, node):
     node.next = head_almas
     return node  
 
-def limpar_tela():
-    os.system('cls' if os.name == 'nt' else 'clear')
+count = tamanho_lista(head)
+
 def combate(head_player, head_inimigos, almas):
     def copiar_lista(head, invertida=False):
         nova_head = None
@@ -335,15 +350,13 @@ def combate(head_player, head_inimigos, almas):
 
     def morreu(personagem, lista_original):
         if personagem.data.get('amigo', False):
-            print("Morreu um amigo!")
             lista_original = remover_tail(lista_original)
         return lista_original
 
-    # Cópias para o combate (player invertido)
     combate_player   = copiar_lista(head_player, invertida=True)
     combate_inimigos = copiar_lista(head_inimigos)
 
-    limpar_tela()
+    limpar_terminal()
     print("=" * 27)
     print("        Início do Combate       ")
     print("=" * 27)
@@ -358,7 +371,6 @@ def combate(head_player, head_inimigos, almas):
             print(f"{defensor.data['Nome']} foi derrotado!")
             head_player = morreu(defensor, head_player)
             combate_inimigos = remover_node(combate_inimigos, defensor)
-            time.sleep(1.5)
             continue
 
         continuar()
@@ -375,10 +387,9 @@ def combate(head_player, head_inimigos, almas):
             almas.append(morto)
 
             combate_player = remover_node(combate_player, atacante)
-            time.sleep(1.5)
             continue
 
-        limpar_tela()
+        limpar_terminal()
 
         # === Novo bloco de status lado a lado ===
         print("\n--- Status do Combate ---\n")
@@ -414,21 +425,25 @@ def combate(head_player, head_inimigos, almas):
 
         continuar()
 
-    limpar_tela()
+    limpar_terminal()
     if not combate_player:
         gameover()
         return
 
-    print("Todos os inimigos foram derrotados. Você venceu o combate!")
+    print("Todos os inimigos foram derrotados. Você venceu o combate!")  
+    for _ in range(random.randint(1, 3)):
+        inventario.append(gerar_amuletos())
+
     continuar()
 
 #==================================================================
 
 def achar_estrutura():
+    mensagem = random.choice(inicios_caminho)
     estrutura_nome, dados = random.choice(list(estruturas.items()))
-
-    print(dados["sprite"])
+    digitar(mensagem)
     digitar(dados["mensagem"])
+    print(dados["sprite"])
     continuar()
 
     while True:
@@ -482,6 +497,7 @@ def achar_estrutura():
 #==================================================================
 
 def encontrar_inimigo():
+    digitar("um sentimento estranho. Algo está vindo.")
     mensagem = random.choice(inimigos_frases)
     digitar(f"\n{mensagem}\n")
 
@@ -536,11 +552,11 @@ def abrir_inventario():
     while True:
         print("\nInventário:")
         for i, item in enumerate(inventario, 1):
-            print(f"{i}. {item.nome} — {item.descricao_curta}")
+            print(f"{i}. {item['nome']} — {item['descricao_curta']}")
 
         print(f"{len(inventario) + 1}. Voltar")
 
-        escolha = input("\nEscolha um item para ver mais detalhes ou voltar:")
+        escolha = input("\nEscolha um item para ver mais detalhes ou voltar: ")
 
         if not escolha.isdigit():
             print("Escolha um item válido.")
@@ -548,15 +564,15 @@ def abrir_inventario():
 
         escolha = int(escolha)
 
-        if  escolha == len(inventario) + 1:
+        if escolha == len(inventario) + 1:
             break
         elif 1 <= escolha <= len(inventario):
             item_selecionado = inventario[escolha - 1]
-            print(f"\n{item_selecionado.nome} - {item_selecionado.descricao_longa}")
-            input("\nPresione Enter para continuar...")
+            print(f"\n{item_selecionado['nome']} - {item_selecionado['descricao_longa']}")
+            input("\nPressione Enter para continuar...")
         else:
             print("Escolha inválida.")
 
-
     continuar()
+
 #================================================================== 

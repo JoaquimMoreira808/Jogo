@@ -91,63 +91,54 @@ personagens = [
 inimigos = [
     {
         "Nome": "Peão das Sombras",
-        "sprite": "\033[1;31m    _\n   (_)    \n  (___)   \n  _|_|_   \n (_____)  \n /_____\\\033[0m",
         "hp": 10,
         "defesa": 1,
         "forca": 4
     },
     {
         "Nome": "Torre Espectral",
-        "sprite": "\033[1;30m  _  _  _   \n | || || |  \n |_______| \n \\__ ___ / \n  |_|___|  \n  |___|_| \n (_______) \n /_______\\\033[0m",
         "hp": 15,
         "defesa": 4,
         "forca": 3
     },
     {
         "Nome": "Cavalo Maldito",
-        "sprite": "\033[1;31m  ^^__    \n /  - \\_  \n<|    __< \n<|    \\   \n<|     \\  \n<|______\\ \n _|____|_ \n(________)\n/________\\\033[0m",
         "hp": 12,
         "defesa": 2,
         "forca": 6
     },
     {
         "Nome": "Bispo Corrupto",
-        "sprite": "\033[1;30m   _O_    \n  / //\\   \n {     }  \n  \\___/   \n  (___)   \n   |_|    \n  /   \\   \n (_____)  \n(_______) \n/_______\\\033[0m",
         "hp": 9,
         "defesa": 2,
         "forca": 5
     },
     {
         "Nome": "Peão Infernal",
-        "sprite": "\033[0;31m    _\n   (_)    \n  (___)   \n  _|_|_   \n (_____)  \n /_____\\\033[0m",
         "hp": 11,
         "defesa": 2,
         "forca": 5
     },
     {
         "Nome": "Torre Sombria",
-        "sprite": "\033[0;30m  _  _  _   \n | || || |  \n |_______| \n \\__ ___ / \n  |_|___|  \n  |___|_| \n (_______) \n /_______\\\033[0m",
         "hp": 18,
         "defesa": 5,
         "forca": 4
     },
     {
         "Nome": "Cavalo do Abismo",
-        "sprite": "\033[0;31m  ^^__    \n /  - \\_  \n<|    __< \n<|    \\   \n<|     \\  \n<|______\\ \n _|____|_ \n(________)\n/________\\\033[0m",
         "hp": 14,
         "defesa": 3,
         "forca": 7
     },
     {
         "Nome": "Bispo do Caos",
-        "sprite": "\033[1;31m   _O_    \n  / //\\   \n {     }  \n  \\___/   \n  (___)   \n   |_|    \n  /   \\   \n (_____)  \n(_______) \n/_______\\\033[0m",
         "hp": 10,
         "defesa": 3,
         "forca": 6
     },
     {
         "Nome": "Cavaleiro das Trevas",
-        "sprite": "\033[1;30m    _    \n   ( )   \n  <_I_>  \n  _|V|_  \n \\__I__/ \n /__I__\\\033[0m",
         "hp": 22,
         "defesa": 5,
         "forca": 8
@@ -170,6 +161,26 @@ estruturas = {
 ^-/^-/^-/^- ^~ |___|##|___|/ ^~ ^ ^
 """,
         "mensagem": "Uma fortaleza antiga, suas muralhas sussurram segredos de guerras passadas."
+    },
+    "lapide": {
+        "sprite": """
+                 __)(__
+           _____/      \\_____
+          |  _     ___   _   ||
+          | | \     |   | \  ||
+          | |  |    |   |  | ||
+          | |_/     |   |_/  ||
+          | | \     |   |    ||
+          | |  \    |   |    ||
+          | |   \. _|_. | .  ||
+          |                  ||
+          |   Ana'be Atrix   ||
+          |                  ||
+  *       | *   **    * **   |**      **
+   \))ejm97/.,(//,,..,,\||(,,.,\\,.((//
+
+""",
+        "mensagem": "Uma lápide sob uma árvore que nunca floresce. Ainda pulsa o eco suave de um nome sussurrado por alguém que jamais a esqueceu."
     },
     "ponte": {
         "sprite": """
@@ -196,7 +207,7 @@ estruturas = {
       -.    `:/'    _.))        .--.
              ||   .'.-'     _..-.. _.-.
 """,
-        "mensagem": "Uma torre mística ergue-se solitária, irradiando energia arcana do topo."
+        "mensagem": "Uma torre mística que se ergue solitária, irradiando energia arcana no topo."
     },
     "cabana": {
         "sprite": """
