@@ -10,7 +10,8 @@ player = {
 """,
     "hp": 14,
     "defesa": 4,
-    "forca": 5
+    "forca": 5,
+    "amigo": True,
 }
 
 
@@ -27,7 +28,8 @@ personagens = [
 """,
         "hp": 16,
         "defesa": 4,
-        "forca": 5
+        "forca": 5,
+        "amigo": True
     },
     {
         "Nome": "Torre",
@@ -43,7 +45,8 @@ personagens = [
 """,
         "hp": 20,
         "defesa": 6,
-        "forca": 4
+        "forca": 4,
+        "amigo": True
     },
     {
         "Nome": "Cavalo",
@@ -60,7 +63,8 @@ personagens = [
 """,
         "hp": 13,
         "defesa": 2,
-        "forca": 7
+        "forca": 7,
+        "amigo": True
     },
     {
         "Nome": "Bispo",
@@ -78,7 +82,8 @@ personagens = [
 """,
         "hp": 11,
         "defesa": 2,
-        "forca": 5
+        "forca": 5,
+        "amigo": True
     }
 ]
 

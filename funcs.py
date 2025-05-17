@@ -184,9 +184,25 @@ def visualizar_bestiario():
 
     continuar()
 
+
 #==================================================================
 
+def gameover():
+    global head, tail, almas
+    limpar_terminal()
+    print(gameover_art)
+    continuar()
+    head = Node(copy.deepcopy(player))
+    tail = head
+    almas = []
+    menu1()
+
+#==================================================================
 def acampamento_aventureiros():
+    global head, tail
+    # Recalcula o tail para garantir que aponta ao último nó válido
+    tail = obter_ultimo_node(head)
+
     digitar("um acampamento. A fogueira bruxuleia, iluminando")
     digitar("os rostos cansados dos aventureiros.")
     digitar('"Um de nós pode ir com você", diz um deles, com olhos sombrios. Quem você escolhe?')
@@ -209,15 +225,14 @@ def acampamento_aventureiros():
     while escolha not in opcoes:
         escolha = input("\nEscolha com sabedoria (1, 2 ou 3): ").strip()
 
-    # Aqui vem a mágica: cópia profunda para ter instância independente
     escolhido_original = opcoes[escolha]
     escolhido = copy.deepcopy(escolhido_original)
 
-    global tail  # garantir que acessa variável global
-    tail = add_node(tail, escolhido)  # adiciona na lista duplamente encadeada
+    tail = add_node(tail, escolhido)
 
     digitar(f"{escolhido['Nome']} agora faz parte do seu grupo.")
     continuar()
+
 
 #==================================================================
 
@@ -236,16 +251,12 @@ def add_node(tail, personagem):
     return novo_node
 
 def remover_node(head, node):
-    # Se o nó a ser removido for o primeiro (head)
     if node.prev:
         node.prev.next = node.next
     else:
-        # Se for o primeiro, atualizamos o head
         head = node.next
-
     if node.next:
         node.next.prev = node.prev
-
     node.prev = None
     node.next = None
     return head
@@ -265,6 +276,21 @@ def tamanho_lista(head):
         current = current.next
     return count
 
+def remover_tail(head):
+    if head is None:
+        return None 
+    
+    if head.next is None:
+        return None
+    
+    atual = head
+    while atual.next:
+        atual = atual.next
+    
+    if atual.prev:
+        atual.prev.next = None
+    
+    return head
 
 #==================================================================
 
@@ -288,23 +314,33 @@ def adicionar_alma(head_almas, node):
 def limpar_tela():
     os.system('cls' if os.name == 'nt' else 'clear')
 def combate(head_player, head_inimigos, almas):
-    def copiar_lista(head):
+    def copiar_lista(head, invertida=False):
         nova_head = None
-        anterior_novo = None
         atual_original = head
         while atual_original:
-            copia_data = dict(atual_original.data)  # Cria uma cópia dos dados
+            copia_data = dict(atual_original.data)
             novo_node = Node(copia_data)
-            if anterior_novo:
-                anterior_novo.next = novo_node
-            else:
+            if invertida:
+                novo_node.next = nova_head
                 nova_head = novo_node
-            anterior_novo = novo_node
+            else:
+                if nova_head is None:
+                    nova_head = novo_node
+                    ultimo = novo_node
+                else:
+                    ultimo.next = novo_node
+                    ultimo = novo_node
             atual_original = atual_original.next
         return nova_head
 
-    # Cópias para o combate
-    combate_player = copiar_lista(head_player)
+    def morreu(personagem, lista_original):
+        if personagem.data.get('amigo', False):
+            print("Morreu um amigo!")
+            lista_original = remover_tail(lista_original)
+        return lista_original
+
+    # Cópias para o combate (player invertido)
+    combate_player   = copiar_lista(head_player, invertida=True)
     combate_inimigos = copiar_lista(head_inimigos)
 
     limpar_tela()
@@ -314,51 +350,67 @@ def combate(head_player, head_inimigos, almas):
     print()
 
     while combate_player and combate_inimigos:
-        # Atacante e defensor são os primeiros nodes das listas
         atacante = combate_player
         defensor = combate_inimigos
 
-        # Ataca o defensor
         atacar(atacante, defensor)
         if defensor.data['hp'] <= 0:
             print(f"{defensor.data['Nome']} foi derrotado!")
-            combate_inimigos = remover_node(combate_inimigos, defensor)  # Remove o inimigo derrotado
+            head_player = morreu(defensor, head_player)
+            combate_inimigos = remover_node(combate_inimigos, defensor)
             time.sleep(1.5)
-            continue  # Continúa para o próximo round
+            continue
 
         continuar()
 
-        # O defensor agora ataca o atacante
         atacar(defensor, atacante)
         continuar()
 
         if atacante.data['hp'] <= 0:
             print(f"{atacante.data['Nome']} foi derrotado!")
+            head_player = morreu(atacante, head_player)
 
-            # Guarda alma do personagem derrotado
             morto = copy.deepcopy(atacante.data)
-            morto['hp'] = player['hp']  # Restaura o HP original
+            morto['hp'] = player['hp']
             almas.append(morto)
 
-            # Remove o jogador derrotado da lista
             combate_player = remover_node(combate_player, atacante)
             time.sleep(1.5)
-            continue  # Continua para o próximo round
+            continue
 
         limpar_tela()
 
-        print("\n--- Status dos Personagens ---\n")
-        print("Seu grupo:")
+        # === Novo bloco de status lado a lado ===
+        print("\n--- Status do Combate ---\n")
+        players = []
         current = combate_player
         while current:
-            print(f"{current.data['Nome']:<12} | HP: {current.data['hp']} ♥")
+            players.append(current.data)
             current = current.next
 
-        print("\nInimigos:")
+        enemies = []
         current = combate_inimigos
         while current:
-            print(f"{current.data['Nome']:<20} | HP: {current.data['hp']} ♥")
+            enemies.append(current.data)
             current = current.next
+
+        # Cabeçalhos
+        header_p = "Seu grupo"
+        header_e = "Inimigos"
+        print(f"{header_p:<25}  {header_e}")
+        print(f"{'-'*len(header_p):<25}  {'-'*len(header_e)}")
+
+        # Impressão em colunas
+        comprimento = max(len(players), len(enemies))
+        for i in range(comprimento):
+            p = players[i] if i < len(players) else {}
+            e = enemies[i] if i < len(enemies) else {}
+            nome_p = p.get('Nome', '')
+            hp_p   = f"HP: {p.get('hp','')}" if p else ''
+            nome_e = e.get('Nome', '')
+            hp_e   = f"HP: {e.get('hp','')}" if e else ''
+            print(f"{nome_p:<15} {hp_p:<8}    {nome_e:<20} {hp_e}")
+        # === Fim do novo bloco ===
 
         continuar()
 
@@ -369,17 +421,6 @@ def combate(head_player, head_inimigos, almas):
 
     print("Todos os inimigos foram derrotados. Você venceu o combate!")
     continuar()
-#==================================================================
-
-def gameover():
-    global head, tail, almas
-    limpar_terminal()
-    print(gameover_art)
-    continuar()
-    head = Node(copy.deepcopy(player))
-    tail = head
-    almas = []
-    menu1()
 
 #==================================================================
 
