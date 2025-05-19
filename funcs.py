@@ -325,7 +325,7 @@ def adicionar_alma(head_almas, node):
     return node  
 
 
-def adicionar_alma(head_bestiario, node):
+def adicionar_bestiario(head_bestiario, node):
     node.next = head_bestiario
     return node  
 
