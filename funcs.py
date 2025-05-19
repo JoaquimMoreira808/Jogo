@@ -168,20 +168,18 @@ def mostrar_almas():
 
 #==================================================================
 def visualizar_bestiario():
-    if not bestiario:
-        print("\nVocê ainda não derrotou nenhum inimigo.")
-        continuar()
-        return
+       if not bestiario:
+        print("Você ainda não derrotou nenhum inimigo.")
+       else:
+            for inimigos in bestiario:
+                print(f"{inimigos['Nome']} | HP: {inimigos['hp']} | Defesa: {inimigos['defesa']} | Força: {inimigos['forca']}")
 
-    print("\n==== BESTIÁRIO ====\n")
-    for inimigo in bestiario:
-        print(inimigo["sprite"])
-        print(f"{inimigo['Nome']}")
-        print(f"HP: {inimigo['hp']} | Defesa: {inimigo['defesa']} | Força: {inimigo['forca']}")
-        print("-" * 30)
+            continuar()
+       
 
-    continuar()
-
+    
+    
+   
 
 #==================================================================
 
@@ -326,9 +324,14 @@ def adicionar_alma(head_almas, node):
     node.next = head_almas
     return node  
 
+
+def adicionar_alma(head_bestiario, node):
+    node.next = head_bestiario
+    return node  
+
 count = tamanho_lista(head)
 
-def combate(head_player, head_inimigos, almas):
+def combate(head_player, head_inimigos, almas, bestiario):
     def copiar_lista(head, invertida=False):
         nova_head = None
         atual_original = head
@@ -370,6 +373,11 @@ def combate(head_player, head_inimigos, almas):
         if defensor.data['hp'] <= 0:
             print(f"{defensor.data['Nome']} foi derrotado!")
             head_player = morreu(defensor, head_player)
+
+            inimigo_morto = copy.deepcopy(defensor.data)
+            inimigo_morto['hp'] = player['hp']
+            bestiario.append(inimigo_morto)
+            
             combate_inimigos = remover_node(combate_inimigos, defensor)
             continue
 
@@ -526,7 +534,7 @@ def encontrar_inimigo():
 
     input("\Iniciar o combate...\n")
     limpar_terminal()
-    combate(head, head_inimigos, almas)
+    combate(head, head_inimigos, almas, bestiario)
 
 
 #==================================================================
