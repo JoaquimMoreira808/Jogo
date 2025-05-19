@@ -8,6 +8,7 @@ import copy
 import random
 import os
 import time
+from collections import defaultdict
 
 #=================================================================
 
@@ -329,6 +330,82 @@ def adicionar_bestiario(head_bestiario, node):
     node.next = head_bestiario
     return node  
 
+
+def usar_item(player_node):
+    if not inventario:
+        print("Você não tem itens no inventário para usar.")
+        input("Pressione Enter para continuar...")
+        return 0
+
+    print("\nItens no inventário:")
+
+    # Organiza os consumíveis por nome e conta
+    contagem_consumiveis = defaultdict(int)
+    itens_por_nome = {}
+    for item in inventario:
+        if item.raridade in ["Comum", "Incomum"]:
+            contagem_consumiveis[item.nome] += 1
+            itens_por_nome[item.nome] = item  # Armazena um exemplo do item
+
+    # Lista de itens únicos para seleção
+    opcoes = []
+
+    # Adiciona consumíveis agrupados
+    for nome, qtd in contagem_consumiveis.items():
+        item = itens_por_nome[nome]
+        opcoes.append((item, qtd))
+
+    # Adiciona itens não consumíveis individualmente
+    for item in inventario:
+        if item.raridade not in ["Comum", "Incomum"]:
+            opcoes.append((item, 1))
+
+    # Exibe itens com quantidade
+    for i, (item, qtd) in enumerate(opcoes, 1):
+        qtd_str = f" ({qtd}x)" if qtd > 1 else ""
+        print(f"{i}. {item.nome}{qtd_str} (Raridade: {item.raridade}) - {item.descricao_curta}")
+
+    print(f"{len(opcoes)+1}. Cancelar")
+    escolha = input("Escolha um item para usar: ")
+
+    if not escolha.isdigit():
+        print("Escolha inválida.")
+        return 0
+
+    escolha = int(escolha)
+    if escolha == len(opcoes) + 1:
+        return 0  # Cancelou
+
+    if 1 <= escolha <= len(opcoes):
+        item, _ = opcoes[escolha - 1]
+        print(f"\nVocê usou {item.nome}!")
+
+        dano_causado = 0
+
+        if item.hp > 0:
+            player_node.data['hp'] += item.hp
+            print(f"Você recuperou {item.hp} de HP!")
+        if item.defesa > 0:
+            player_node.data['defesa'] += item.defesa
+            print(f"Sua defesa aumentou em {item.defesa}!")
+        if item.dano > 0:
+            dano_causado = item.dano
+            print(f"{item.nome} causa {item.dano} de dano no inimigo!")
+
+        # Remover item do inventário se for consumível
+        if item.raridade in ["Comum", "Incomum"]:
+            inventario.remove(item)
+            print(f"O item {item.nome} foi consumido.")
+        else:
+            print(f"O item {item.nome} não foi consumido por ser de raridade {item.raridade}.")
+
+        input("Pressione Enter para continuar...")
+        return dano_causado
+
+    else:
+        print("Escolha inválida.")
+        return 0
+
 count = tamanho_lista(head)
 
 def combate(head_player, head_inimigos, almas, bestiario):
@@ -369,7 +446,28 @@ def combate(head_player, head_inimigos, almas, bestiario):
         atacante = combate_player
         defensor = combate_inimigos
 
-        atacar(atacante, defensor)
+        print("Sua vez! O que deseja fazer?")
+        print("1. Atacar")
+        print("2. Usar item")
+        escolha = input("Escolha: ")
+
+        if escolha == "1":
+            atacar(atacante, defensor)
+
+        elif escolha == "2":
+            dano_extra = usar_item(atacante)
+            if dano_extra > 0:
+                defensor.data['hp'] -= dano_extra
+                print(f"O inimigo recebeu {dano_extra} de dano pelo item!")
+            else:
+                print("Você não usou nenhum item ou o item não causou dano.")
+                input("Pressione Enter para continuar...")
+
+        else:
+            print("Opção inválida, você perde o turno.")
+            input("Pressione Enter para continuar...")
+
+        # Verifica se inimigo morreu
         if defensor.data['hp'] <= 0:
             print(f"{defensor.data['Nome']} foi derrotado!")
             head_player = morreu(defensor, head_player)
@@ -377,15 +475,14 @@ def combate(head_player, head_inimigos, almas, bestiario):
             inimigo_morto = copy.deepcopy(defensor.data)
             inimigo_morto['hp'] = player['hp']
             bestiario.append(inimigo_morto)
-            
+
             combate_inimigos = remover_node(combate_inimigos, defensor)
-            continue
+            continuar()
+        
 
         continuar()
 
         atacar(defensor, atacante)
-        continuar()
-
         if atacante.data['hp'] <= 0:
             print(f"{atacante.data['Nome']} foi derrotado!")
             head_player = morreu(atacante, head_player)
@@ -395,7 +492,8 @@ def combate(head_player, head_inimigos, almas, bestiario):
             almas.append(morto)
 
             combate_player = remover_node(combate_player, atacante)
-            continue
+            continuar()
+
 
         limpar_terminal()
 
@@ -473,7 +571,7 @@ def achar_estrutura():
         elif escolha == "2":
             digitar("Você explora os arredores com cautela...")
             
-            chance = random.choices(["item", "nada"], weights=[70, 30], k=1)[0]
+            chance = random.choices(["item", "nada"], weights=[80, 20], k=1)[0]
             
             if chance == "item":
                 itens = list(itens_possiveis_encontrar.values())
@@ -560,26 +658,33 @@ def abrir_inventario():
     while True:
         print("\nInventário:")
         for i, item in enumerate(inventario, 1):
-            print(f"{i}. {item['nome']} — {item['descricao_curta']}")
+            print(f"{i}. {item.nome} — {item.descricao_curta}")
+        print("Q. Voltar")
 
-        print(f"{len(inventario) + 1}. Voltar")
+        escolha = input("\nEscolha um item para ver mais detalhes ou 'Q' para voltar: ").strip().lower()
 
-        escolha = input("\nEscolha um item para ver mais detalhes ou voltar: ")
-
-        if not escolha.isdigit():
-            print("Escolha um item válido.")
-            continue
-
-        escolha = int(escolha)
-
-        if escolha == len(inventario) + 1:
+        if escolha == "q":
             break
-        elif 1 <= escolha <= len(inventario):
-            item_selecionado = inventario[escolha - 1]
-            print(f"\n{item_selecionado['nome']} - {item_selecionado['descricao_longa']}")
-            input("\nPressione Enter para continuar...")
+        elif escolha.isdigit():
+            indice = int(escolha) - 1
+            if 0 <= indice < len(inventario):
+                item = inventario[indice]
+                print(f"\n{item.nome} — {item.raridade}")
+                print("-" * len(item.nome))
+                print(f"{item.descricao_longa}\n")
+
+                if item.dano > 0:
+                    print(f"Dano: {item.dano}")
+                if item.defesa > 0:
+                    print(f"Defesa: +{item.defesa}")
+                if item.hp > 0:
+                    print(f"HP: +{item.hp}")
+
+                input("\nPressione Enter para continuar...")
+            else:
+                print("Escolha inválida.")
         else:
-            print("Escolha inválida.")
+            print("Entrada inválida.")
 
     continuar()
 
