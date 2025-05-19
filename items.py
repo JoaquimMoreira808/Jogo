@@ -63,8 +63,8 @@ espada_rei_caido = Item(
 )
 
 taca_do_cavaleiro_risonho = Item(
-    "Taça do Cavaleiro Risonho"
-    "Uma taça de estanho, lascada na borda."
+    "Taça do Cavaleiro Risonho",
+    "Uma taça de estanho, lascada na borda.",
     "Diz-se que um cavaleiro se recusava a matar, mesmo em batalha. \n" \
     "Ele brindava com os inimigos antes de morrer sorrindo — mais livre que qualquer rei.",
     raridade="Raro",
@@ -72,8 +72,8 @@ taca_do_cavaleiro_risonho = Item(
 )
 
 medalhao_da_abertura = Item(
-    "Medalhão da Abertura"
-    "Uma moeda achatada, com dois lados idênticos. "
+    "Medalhão da Abertura",
+    "Uma moeda achatada, com dois lados idênticos. ",
     "Nas vilas das fileiras iniciais, diz-se que quem carrega esse medalhão pode evitar o primeiro movimento... \n" \
     "só uma vez.",
     raridade="Raro",
@@ -81,24 +81,24 @@ medalhao_da_abertura = Item(
 )
 
 lamina_de_seis_casas = Item(
-    "A Lâmina de Seis Casas"
-    "Espada curta e quebrada, sem guarda. "
+    "A Lâmina de Seis Casas",
+    "Espada curta e quebrada, sem guarda. ",
     "Feita para peões — finos de espírito, mas firmes de vontade. Quem a empunha não recua. Quem recua, morre.",
     raridade="Raro",
     hp=0
 )
 
 recorte_veu_casamento = Item(
-    "Recorte de Véu de Casamento"
-    "Trapo branco com fios de ouro, manchado de vinho escuro. "
+    "Recorte de Véu de Casamento",
+    "Trapo branco com fios de ouro, manchado de vinho escuro. ",
     "Era usado nos casamentos dos bispos do Leste. Hoje, é usado para cobrir corpos que caem antes da terceira jogada.",
     raridade="Raro",
     hp=0
 )
 
 sineta_ultimo_taberneiro = Item(
-    "Sineta do Último Taberneiro"
-    "Pequeno sino de ferro, sem som. "
+    "Sineta do Último Taberneiro",
+    "Pequeno sino de ferro, sem som. ",
     "Diz-se que existia uma taverna na coluna H. Quando a guerra alcançou sua porta, o dono tocou esta sineta... "
     "e nenhuma peça jamais passou por lá novamente.",
     raridade="Raro",
@@ -106,16 +106,16 @@ sineta_ultimo_taberneiro = Item(
 )
 
 carta_nunca_entregue = Item(
-    "Carta Nunca Entregue"
-    "Papel ressecado, a tinta manchada por lágrimas ou chuva. "
+    "Carta Nunca Entregue",
+    "Papel ressecado, a tinta manchada por lágrimas ou chuva. ",
     "Escrita por um escudeiro ao seu amante, um peão do lado inimigo. Foi guardada por um corvo que jamais soube a quem levar.",
     raridade="Raro",
     hp=0
 )
 
 botao_segundo_lanceiro = Item(
-    "Botão de Uniforme do Segundo Lanceiro"
-    "Um botão de bronze polido, leve como poeira. "
+    "Botão de Uniforme do Segundo Lanceiro",
+    "Um botão de bronze polido, leve como poeira. ",
     "Não houve Primeiro Lanceiro. \n" \
     "O Segundo existiu por engano, mas virou lenda porque sobreviveu a três promessas quebradas e a um cavalo cego.",
     raridade="Raro",
@@ -123,16 +123,16 @@ botao_segundo_lanceiro = Item(
 )
 
 ovo_torre_ociosa = Item(
-    "Ovo da Torre Ociosa"
-    "Casca vazia, quente ao toque. "
+    "Ovo da Torre Ociosa",
+    "Casca vazia, quente ao toque. ",
     "As torres costumavam guardar ovos. Por quê? Ninguém sabe. Mas toda vez que um rei morre, um ovo se parte ao longe.",
     raridade="Raro",
     hp=0
 )
 
 cordao_maos_atadas = Item(
-    "Cordão das Mãos Atadas"
-    "Um laço de corda escurecida, cheira a salmoura. "
+    "Cordão das Mãos Atadas",
+    "Um laço de corda escurecida, cheira a salmoura. ",
     "Usado por servos que juraram nunca mover peças por vontade própria. \n" \
     "Alguns dizem que os ossos de seus pulsos ainda tremem quando o jogo muda.",
     raridade="Raro",
@@ -140,8 +140,8 @@ cordao_maos_atadas = Item(
 )
 
 fragmento_peao_corrompido = Item(
-    "Fragmento de Peão Corrompido"
-    "Pequeno pedaço de estátua negra, derretida por dentro. "
+    "Fragmento de Peão Corrompido",
+    "Pequeno pedaço de estátua negra, derretida por dentro. ",
     "Um peão que alcançou o fim... e recusou transformar-se. Morreu inteiro. Virou lenda entre os que preferem permanecer menores.",
     raridade="Raro",
     hp=0

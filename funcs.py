@@ -176,11 +176,6 @@ def visualizar_bestiario():
                 print(f"{inimigos['Nome']} | HP: {inimigos['hp']} | Defesa: {inimigos['defesa']} | Força: {inimigos['forca']}")
 
             continuar()
-       
-
-    
-    
-   
 
 #==================================================================
 
@@ -216,7 +211,6 @@ def gerar_amuletos():
 
 def acampamento_aventureiros():
     global head, tail
-    # Recalcula o tail para garantir que aponta ao último nó válido
     tail = obter_ultimo_node(head)
 
     digitar("um acampamento. A fogueira bruxuleia, iluminando")
@@ -225,16 +219,34 @@ def acampamento_aventureiros():
     continuar()
 
     personagens_aleatorios = random.sample(personagens, 3)
-
     opcoes = {}
+
+    nomes_linha = [f"[{i+1}] {p['Nome']}".ljust(25) for i, p in enumerate(personagens_aleatorios)]
+    print("\n" + "   ".join(nomes_linha))
+
+    sprites_linhas = [p["sprite"].split("\n") for p in personagens_aleatorios]
+    max_linhas_sprite = max(len(sprite) for sprite in sprites_linhas)
+
+    for i in range(max_linhas_sprite):
+        linha = []
+        for sprite in sprites_linhas:
+            if i < len(sprite):
+                linha.append(sprite[i].ljust(25))
+            else:
+                linha.append(" " * 25)
+        print("   ".join(linha))
+
+    atributos = ["hp", "defesa", "forca"]
+    for atributo in atributos:
+        linha = []
+        for p in personagens_aleatorios:
+            valor = f"{atributo.capitalize()}: {p[atributo]}"
+            linha.append(valor.ljust(25))
+        print("   ".join(linha))
+
+    print("-" * 80)
+
     for i, personagem in enumerate(personagens_aleatorios, 1):
-        nome = personagem["Nome"]
-        print(f"\n[{i}] {nome}:")
-        print(personagem["sprite"])
-        print(f"HP: {personagem['hp']}")
-        print(f"Defesa: {personagem['defesa']}")
-        print(f"Força: {personagem['forca']}")
-        print("-" * 30)
         opcoes[str(i)] = personagem
 
     escolha = ""
@@ -248,7 +260,6 @@ def acampamento_aventureiros():
 
     digitar(f"{escolhido['Nome']} agora faz parte do seu grupo.")
     continuar()
-
 
 #==================================================================
 
