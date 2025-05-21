@@ -19,7 +19,7 @@ class Item:
 # Itens
 # ==========================
 
-#Descrição dos Itens
+#Informações dos Itens
 frasco_piche = Item(
     "Frasco de Piche",
     "Reduz temporariamente a velocidade do inimigo. ",
@@ -147,16 +147,15 @@ fragmento_peao_corrompido = Item(
     hp=0
 )
 
-#raridade dos itens
-
+#Raridade dos itens
 pesos_raridade = {
     "Comum": 50,
     "Incomum": 30,
     "Raro": 15,
-    "Lendário": 5
+    "Lendário": 50000
 }
 
-# Dicionário dos itens
+#Dicionário dos itens
 itens_possiveis_encontrar = {
     "frasco_piche": frasco_piche,
     "unguento_curandeiro": unguento_curandeiro,

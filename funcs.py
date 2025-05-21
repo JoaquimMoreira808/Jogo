@@ -41,7 +41,7 @@ def continuar():
     input("...")
 
 #=================================================================
-
+#MENU DE DEBUG
 def debug():
     while True:
         print("╔════════════════════════════════╗")
@@ -69,7 +69,7 @@ def debug():
 
 #=================================================================
 
-# Menu, é um menu :I
+# MENU PRINCIPAL
 def menu():
     while True:
         print("\n╔═══════════════════════════════╗")
@@ -168,6 +168,8 @@ def mostrar_almas():
 
 
 #==================================================================
+
+#BESTÁRIO
 def visualizar_bestiario():
        if not bestiario:
         print("Você ainda não derrotou nenhum inimigo.")
@@ -191,8 +193,7 @@ def gameover():
 
 #==================================================================
 
-import random
-
+#GERADOR DE AMULETOS
 def gerar_amuletos():
     atributos_possiveis = ['força', 'resistência', 'vida', 'capacidade']
     escolhidos = random.sample(atributos_possiveis, 2)
@@ -209,6 +210,7 @@ def gerar_amuletos():
     
 #==================================================================
 
+#ACAMPAMENTOS DOS AVENTUREIROS
 def acampamento_aventureiros():
     global head, tail
     tail = obter_ultimo_node(head)
@@ -288,7 +290,6 @@ def remover_node(head, node):
     node.next = None
     return head
 
-
 def obter_ultimo_node(head):
     current = head
     while current.next:
@@ -322,11 +323,11 @@ def remover_tail(head):
 #==================================================================
 
 #Definição de party
-
 head = Node(copy.deepcopy(player))
 tail = head
 #==================================================================
 
+#AÇÕES DO GAME
 def atacar(atacante, defensor):
     dano = max(atacante.data['forca'] - defensor.data['defesa'], 1)  
     defensor.data['hp'] -= dano
@@ -357,7 +358,11 @@ def usar_item(player_node):
         if item.raridade in ["Comum", "Incomum"]:
             contagem_consumiveis[item.nome] += 1
             itens_por_nome[item.nome] = item  # Armazena um exemplo do item
-
+        elif item.raridade in ["Lendário"]:
+            continue
+        else:
+            Exception("Erro Desconhecido")
+            
     # Lista de itens únicos para seleção
     opcoes = []
 
@@ -370,6 +375,10 @@ def usar_item(player_node):
     for item in inventario:
         if item.raridade not in ["Comum", "Incomum"]:
             opcoes.append((item, 1))
+        elif item.raridade in ["Lendário"]:
+            continue
+        else:
+            Exception("Erro Desconhecido")
 
     # Exibe itens com quantidade
     for i, (item, qtd) in enumerate(opcoes, 1):
@@ -419,6 +428,7 @@ def usar_item(player_node):
 
 count = tamanho_lista(head)
 
+#COMBATE
 def combate(head_player, head_inimigos, almas, bestiario):
     def copiar_lista(head, invertida=False):
         nova_head = None
@@ -555,6 +565,7 @@ def combate(head_player, head_inimigos, almas, bestiario):
 
 #==================================================================
 
+#ESTRUTURA
 def achar_estrutura():
     mensagem = random.choice(inicios_caminho)
     estrutura_nome, dados = random.choice(list(estruturas.items()))
@@ -571,7 +582,7 @@ def achar_estrutura():
         print("║ 2. Explorar estrutura         ║")
         print("║ 3. Montar uma fogueira        ║")
         print("╚═══════════════════════════════╝")
-        escolha = input("Escolha uma opção (1 ou 2): ").strip()
+        escolha = input("Escolha uma opção (1, 2 ou 3): ").strip()
 
         #player sai da estrutura
         if escolha == "1":
@@ -589,11 +600,13 @@ def achar_estrutura():
                 pesos = [pesos_raridade.get(item.raridade, 1) for item in itens]
                 item_encontrado = random.choices(itens, weights=pesos, k=1)[0]
                 
-                inventario.append(item_encontrado)
-                digitar(f"Você encontrou um item: {item_encontrado.nome}!")
-                digitar(f"{item_encontrado.descricao_curta}")
-
-                digitar("Você guarda o item com cuidado antes de seguir seu caminho.")
+                if item_encontrado.raridade in ["Raro", "Lendário"] and item_encontrado in inventario:
+                    digitar(f"Você percebe que ja possui {item_encontrado.nome}, então você decide apenas continuar seu caminho.")
+                else:
+                    inventario.append(item_encontrado)
+                    digitar(f"Você encontrou um item: {item_encontrado.nome}!")
+                    digitar(f"{item_encontrado.descricao_curta}")
+                    digitar("Você guarda o item com cuidado antes de seguir seu caminho.")
                 return
 
             else:
@@ -613,6 +626,7 @@ def achar_estrutura():
 
 #==================================================================
 
+#INIMIGOS
 def encontrar_inimigo():
     digitar("um sentimento estranho. Algo está vindo.")
     mensagem = random.choice(inimigos_frases)
@@ -648,6 +662,7 @@ def encontrar_inimigo():
 
 #==================================================================
 
+#CHANCES DE ENCONTRAR AVENTUREIRO, ESTRUTURAS OU INIMIGOS
 acoes = [acampamento_aventureiros, achar_estrutura, encontrar_inimigo]
 pesos = [1, 1, 1]
 
@@ -658,6 +673,8 @@ def seguir_caminho():
     evento()
 
 #==================================================================    
+
+#INVENTÁRIO
 inventario = []
 
 def abrir_inventario():
@@ -666,37 +683,37 @@ def abrir_inventario():
         continuar()
         return
 
-    while True:
-        print("\nInventário:")
-        for i, item in enumerate(inventario, 1):
-            print(f"{i}. {item.nome} — {item.descricao_curta}")
-        print("Q. Voltar")
+    categorias = {
+        "Amuletos": [],
+        "Consumiveis": [],
+        "Itens de Combate": []
+    }
 
-        escolha = input("\nEscolha um item para ver mais detalhes ou 'Q' para voltar: ").strip().lower()
-
-        if escolha == "q":
-            break
-        elif escolha.isdigit():
-            indice = int(escolha) - 1
-            if 0 <= indice < len(inventario):
-                item = inventario[indice]
-                print(f"\n{item.nome} — {item.raridade}")
-                print("-" * len(item.nome))
-                print(f"{item.descricao_longa}\n")
-
-                if item.dano > 0:
-                    print(f"Dano: {item.dano}")
-                if item.defesa > 0:
-                    print(f"Defesa: +{item.defesa}")
-                if item.hp > 0:
-                    print(f"HP: +{item.hp}")
-
-                input("\nPressione Enter para continuar...")
-            else:
-                print("Escolha inválida.")
+    for item in inventario:
+        if isinstance(item, dict):
+            categorias["Amuletos"].append(item)
+        elif item.raridade in ["Comum", "Incomum"]:
+            categorias["Consumiveis"].append(item)
         else:
-            print("Entrada inválida.")
+            categorias["Itens de Combate"].append(item)
+    print("\n--- Inventário: ---")
+    for nome_cat, itens in categorias.items():
+        if not itens:
+            continue
+        print(f"\n{nome_cat}:")
+        contagem = {}
 
+        for item in itens:
+            chave = item['nome'] if isinstance(item, dict) else item.nome
+            if chave not in contagem:
+                contagem[chave] = {"quantidade": 1, "item": item}
+            else:
+                contagem[chave]["quantidade"] += 1
+
+        for i, (nome, dados) in enumerate(contagem.items(), 1):
+            print(f"{i}. {nome} x{dados['quantidade']}")
+
+    input("\nPressione Enter para voltar.")
     continuar()
 
 #================================================================== 
