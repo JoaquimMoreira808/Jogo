@@ -151,7 +151,32 @@ def mostrar_party():
 
 #==================================================================
 
+#HELPER PARA O SISTEMA DE ITENS E AMULETOS
+def get_nome(item):
+    if isinstance(item, dict):
+        return item.get('nome', 'Item Desconhecido')
+    else:
+        return getattr(item, 'nome', 'Item Desconhecido')
+    
+def get_raridade(item):
+    if isinstance(item, dict):
+        return item.get('raridade', 'Comum')
+    else:
+        return getattr(item, 'raridade', 'Comum')
+    
+def get_descricao_curta(item):
+    if isinstance(item, dict):
+        return item.get('descricao_curta', 'Item não possui Informações')
+    else:
+        return getattr(item, 'nome', 'Item não possui Informações')
 
+def get_descricao_longa(item):
+    if isinstance(item, dict):
+        return item.get('descricao_longa', 'Sem descrição detalhada.')
+    else:
+        return getattr(item, 'descricao_longa', 'Sem descrição detalhada.')
+
+#==================================================================
 def mostrar_almas():
     if not almas:
         print("O frasco de almas pulsa... nenhum dos teus caiu no frias garras da escuridão.")
@@ -355,10 +380,10 @@ def usar_item(player_node):
     contagem_consumiveis = defaultdict(int)
     itens_por_nome = {}
     for item in inventario:
-        if item.raridade in ["Comum", "Incomum"]:
-            contagem_consumiveis[item.nome] += 1
-            itens_por_nome[item.nome] = item  # Armazena um exemplo do item
-        elif item.raridade in ["Lendário"]:
+        if get_raridade(item) in ["Comum", "Incomum"]:
+            contagem_consumiveis[get_nome(item)] += 1
+            itens_por_nome[get_nome(item)] = item  # Armazena um exemplo do item
+        elif get_raridade(item) in ["Lendário"]:
             continue
         else:
             Exception("Erro Desconhecido")
@@ -373,9 +398,9 @@ def usar_item(player_node):
 
     # Adiciona itens não consumíveis individualmente
     for item in inventario:
-        if item.raridade not in ["Comum", "Incomum"]:
+        if get_raridade(item) not in ["Comum", "Incomum"]:
             opcoes.append((item, 1))
-        elif item.raridade in ["Lendário"]:
+        elif get_raridade(item) in ["Lendário"]:
             continue
         else:
             Exception("Erro Desconhecido")
@@ -383,13 +408,13 @@ def usar_item(player_node):
     # Exibe itens com quantidade
     for i, (item, qtd) in enumerate(opcoes, 1):
         qtd_str = f" ({qtd}x)" if qtd > 1 else ""
-        print(f"{i}. {item.nome}{qtd_str} (Raridade: {item.raridade}) - {item.descricao_curta}")
+        print(f"{i}. {get_nome(item)}{qtd_str} (Raridade: {get_raridade(item)}) - {get_descricao_curta(item)}")
 
     print(f"{len(opcoes)+1}. Cancelar")
     escolha = input("Escolha um item para usar: ")
 
     if not escolha.isdigit():
-        print("Escolha inválida.")
+        print("Opção inválida. Tente novamente.")
         return 0
 
     escolha = int(escolha)
@@ -398,7 +423,7 @@ def usar_item(player_node):
 
     if 1 <= escolha <= len(opcoes):
         item, _ = opcoes[escolha - 1]
-        print(f"\nVocê usou {item.nome}!")
+        print(f"\nVocê usou {get_nome(item)}!")
 
         dano_causado = 0
 
@@ -410,20 +435,20 @@ def usar_item(player_node):
             print(f"Sua defesa aumentou em {item.defesa}!")
         if item.dano > 0:
             dano_causado = item.dano
-            print(f"{item.nome} causa {item.dano} de dano no inimigo!")
+            print(f"{get_nome(item)} causa {item.dano} de dano no inimigo!")
 
         # Remover item do inventário se for consumível
-        if item.raridade in ["Comum", "Incomum"]:
+        if get_raridade(item) in ["Comum", "Incomum"]:
             inventario.remove(item)
-            print(f"O item {item.nome} foi consumido.")
+            print(f"O item {get_nome(item)} foi consumido.")
         else:
-            print(f"O item {item.nome} não foi consumido por ser de raridade {item.raridade}.")
+            print(f"O item {get_nome(item)} não foi consumido por ser de raridade {get_raridade(item)}.")
 
         input("Pressione Enter para continuar...")
         return dano_causado
 
     else:
-        print("Escolha inválida.")
+        print("Opção inválida. Tente novamente.")
         return 0
 
 count = tamanho_lista(head)
@@ -597,7 +622,7 @@ def achar_estrutura():
             
             if chance == "item":
                 itens = list(itens_possiveis_encontrar.values())
-                pesos = [pesos_raridade.get(item.raridade, 1) for item in itens]
+                pesos = [pesos_raridade.get(get_raridade(item), 1) for item in itens]
                 item_encontrado = random.choices(itens, weights=pesos, k=1)[0]
                 
                 if item_encontrado.raridade in ["Raro", "Lendário"] and item_encontrado in inventario:
@@ -621,7 +646,7 @@ def achar_estrutura():
             break
 
         else:
-            print("Essa opção não parece válida. Tente novamente.")
+            print("Opção inválida. Tente novamente.")
 
 
 #==================================================================
@@ -692,28 +717,70 @@ def abrir_inventario():
     for item in inventario:
         if isinstance(item, dict):
             categorias["Amuletos"].append(item)
-        elif item.raridade in ["Comum", "Incomum"]:
-            categorias["Consumiveis"].append(item)
         else:
-            categorias["Itens de Combate"].append(item)
-    print("\n--- Inventário: ---")
-    for nome_cat, itens in categorias.items():
-        if not itens:
-            continue
-        print(f"\n{nome_cat}:")
-        contagem = {}
-
-        for item in itens:
-            chave = item['nome'] if isinstance(item, dict) else item.nome
-            if chave not in contagem:
-                contagem[chave] = {"quantidade": 1, "item": item}
+            raridade = get_raridade(item)
+            if raridade in ["Comum", "Incomum"]:
+                categorias["Consumiveis"].append(item)
             else:
-                contagem[chave]["quantidade"] += 1
+                categorias["Itens de Combate"].append(item)
 
-        for i, (nome, dados) in enumerate(contagem.items(), 1):
-            print(f"{i}. {nome} x{dados['quantidade']}")
+    while True:
+        print("\n--- Inventário: ---")
+        nomes_categorias = list(categorias.keys())
+        for idx, nome_cat in enumerate(nomes_categorias, start=1):
+            print(f"{idx}. {nome_cat} ({len(categorias[nome_cat])} itens)")
 
-    input("\nPressione Enter para voltar.")
-    continuar()
+        try:
+            escolha_cat = int(input("\nEscolha uma categoria para ver os itens (0 para voltar): "))
+            if escolha_cat == 0:
+                continuar()
+                return
+            if not (1 <= escolha_cat <= len(nomes_categorias)):
+                print("Categoria inválida.")
+                continuar()
+                return
+
+            categoria_escolhida = nomes_categorias[escolha_cat - 1]
+            itens = categorias[categoria_escolhida]
+
+            if not itens:
+                print("Essa categoria está vazia.")
+                continuar()
+                return
+
+            contagem = {}
+            lista_itens = []
+            for item in itens:
+                chave = item['nome'] if isinstance(item, dict) else item.nome
+                if chave not in contagem:
+                    contagem[chave] = {"quantidade": 1, "item": item}
+                    lista_itens.append(item)
+                else:
+                    contagem[chave]["quantidade"] += 1
+
+            while True:
+                print(f"\n--- {categoria_escolhida} ---")
+                for i, item in enumerate(lista_itens, start=1):
+                    nome = get_nome(item)
+                    print(f"{i}. {nome} x{contagem[nome]['quantidade']}")
+
+                escolha_item = int(input("\nEscolha um item para inspecionar (0 para voltar): "))
+                if escolha_item == 0:
+                    break
+                if not (1 <= escolha_item <= len(lista_itens)):
+                    print("Item inválido.")
+                    continuar()
+                    break
+
+                item_escolhido = lista_itens[escolha_item - 1]
+
+                print(f"\nNome: {get_nome(item_escolhido)}")
+                print(f"Descrição: {get_descricao_longa(item_escolhido)}")
+                print(f"Raridade: {get_raridade(item_escolhido)}")
+                input("\nPressione Enter para voltar à lista de itens.")
+
+        except ValueError:
+            print("Opção inválida. Tente novamente.")
+            continuar()
 
 #================================================================== 

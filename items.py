@@ -152,7 +152,7 @@ pesos_raridade = {
     "Comum": 50,
     "Incomum": 30,
     "Raro": 15,
-    "Lendário": 50000
+    "Lendário": 25
 }
 
 #Dicionário dos itens
