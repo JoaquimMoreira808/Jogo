@@ -141,7 +141,7 @@ inimigos = [
         "Nome": "Cavaleiro das Trevas",
         "hp": 22,
         "defesa": 5,
-        "forca": 8
+        "forca": 5
     }
 ]
 

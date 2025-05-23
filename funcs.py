@@ -190,8 +190,26 @@ def mostrar_almas():
             print(f"{personagem['Nome']} | HP: {personagem['hp']} | Defesa: {personagem['defesa']} | Força: {personagem['forca']}")
 
         continuar()
+#==================================================================
 
-
+def menu_fogueira(almas):
+                while True:
+                    print("\n====Fogueira====")
+                    print("1. Reviver aliado")
+                    print("2. Montar amuleto")
+                    print("3. Apagar fogueira")
+                    escolha = input("Escolha uma opção: ")
+                    if escolha == '1':
+                        reviver_aliados(almas)
+                    elif escolha == '2':
+                        inventario.append(gerar_amuletos())
+                        print("Você montou um amuleto e adicionou ao seu invetário.")
+                    elif escolha == '3':
+                        print("Você apaga a fogueira e se retira.")
+                        break
+                    else: 
+                        ("Opção inválida tente novamente.")
+   
 #==================================================================
 
 #BESTÁRIO
@@ -204,6 +222,25 @@ def visualizar_bestiario():
 
             continuar()
 
+#==================================================================
+#Reviver aliados
+def reviver_aliados(almas):
+    global tail
+    
+
+    if not almas:
+      print("Não há nenhuma alma para ser restaurada.")
+      return
+  
+    print("\nRevivendo aliados...")
+    while almas:
+        
+        personagem = almas.pop(0)
+        tail = add_node(tail, personagem)
+        
+        print(f"{personagem['Nome']} foi revivido.")
+   
+    print("Todos os aliados foram revividos.")
 #==================================================================
 
 def gameover():
@@ -643,8 +680,9 @@ def achar_estrutura():
             digitar ("Você monta uma pequena fogueira com galhos secos ao redor...")
             digitar("O calor do fogo traz um alívio momentâneo do frio da noite.")
             print(fogueira_art)
-            break
-
+            menu_fogueira(almas)
+            
+            
         else:
             print("Opção inválida. Tente novamente.")
 
