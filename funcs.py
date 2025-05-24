@@ -69,7 +69,7 @@ def debug():
 
 #=================================================================
 
-# MENU PRINCIPAL
+#MENU PRINCIPAL
 def menu():
     while True:
         print("\n╔═══════════════════════════════╗")
@@ -175,7 +175,40 @@ def get_descricao_longa(item):
         return item.get('descricao_longa', 'Sem descrição detalhada.')
     else:
         return getattr(item, 'descricao_longa', 'Sem descrição detalhada.')
+    
+#Caracteristicas dos itens
+def get_dano(item):
+    try:
+        if isinstance(item, dict):
+            return int(item.get('dano', 0) or 0)
+        return int(getattr(item, 'dano', 0) or 0)
+    except (ValueError, TypeError):
+        return 0
 
+def get_dano_real(item):
+    try:
+        if isinstance(item, dict):
+            return int(item.get('dano_real', 0) or 0)
+        return int(getattr(item, 'dano_real', 0) or 0)
+    except (ValueError, TypeError):
+        return 0
+
+def get_hp(item):
+    try:
+        if isinstance(item, dict):
+            return int(item.get('hp', 0) or 0)
+        return int(getattr(item, 'hp', 0) or 0)
+    except (ValueError, TypeError):
+        return 0
+    
+def get_defesa(item):
+    try:
+        if isinstance(item, dict):
+            return int(item.get('defesa', 0) or 0)
+        return int(getattr(item, 'defesa', 0) or 0)
+    except (ValueError, TypeError):
+        return 0
+    
 #==================================================================
 def mostrar_almas():
     if not almas:
@@ -534,9 +567,29 @@ def combate(head_player, head_inimigos, almas, bestiario):
         print("2. Usar item")
         escolha = input("Escolha: ")
 
+        #Player ataca
         if escolha == "1":
-            atacar(atacante, defensor)
+            forca = atacante.data.get("forca", 0)
+            defesa = defensor.data.get("defesa", 0)
 
+            print(f"{atacante.data['Nome']} ataca {defensor.data['Nome']} causando {forca} de dano!")
+
+            if defesa > 0:
+                if forca <= defesa:
+                    defensor.data['defesa'] -= forca
+                    print(f"{defensor.data['Nome']} absorveu o dano com a defesa!")
+                else:
+                    dano_restante = forca - defesa
+                    defensor.data['defesa'] = 0
+                    defensor.data['hp'] -= dano_restante
+                    print(f"{defensor.data['Nome']} teve a defesa quebrada e perdeu {dano_restante} de HP!")
+            else:
+                defensor.data['hp'] -= forca
+                print(f"{defensor.data['Nome']} não tinha defesa e perdeu {forca} de HP!")
+
+            input("Pressione Enter para continuar...")
+
+        #Player ataca com itens, restaura hp ou aumenta a defesa
         elif escolha == "2":
             dano_extra = usar_item(atacante)
             if dano_extra > 0:
@@ -565,7 +618,27 @@ def combate(head_player, head_inimigos, almas, bestiario):
 
         continuar()
 
-        atacar(defensor, atacante)
+        #Inimigo ataca
+        forca = defensor.data.get("forca", 0)
+        defesa = atacante.data.get("defesa", 0)
+
+        print(f"{defensor.data['Nome']} ataca {atacante.data['Nome']} causando {forca} de dano!")
+
+        if defesa > 0:
+            if forca <= defesa:
+                atacante.data['defesa'] -= forca
+                print(f"{atacante.data['Nome']} absorveu o dano com a defesa!")
+            else:
+                dano_restante = forca - defesa
+                atacante.data['defesa'] = 0
+                atacante.data['hp'] -= dano_restante
+                print(f"{atacante.data['Nome']} teve a defesa quebrada e perdeu {dano_restante} de HP!")
+        else:
+            atacante.data['hp'] -= forca
+            print(f"{atacante.data['Nome']} não tinha defesa e perdeu {forca} de HP!")
+
+        input("Pressione Enter para continuar...")
+
         if atacante.data['hp'] <= 0:
             print(f"{atacante.data['Nome']} foi derrotado!")
             head_player = morreu(atacante, head_player)
@@ -576,7 +649,6 @@ def combate(head_player, head_inimigos, almas, bestiario):
 
             combate_player = remover_node(combate_player, atacante)
             continuar()
-
 
         limpar_terminal()
 
@@ -597,19 +669,26 @@ def combate(head_player, head_inimigos, almas, bestiario):
         # Cabeçalhos
         header_p = "Seu grupo"
         header_e = "Inimigos"
-        print(f"{header_p:<25}  {header_e}")
-        print(f"{'-'*len(header_p):<25}  {'-'*len(header_e)}")
+        print(f"{header_p:<35}  {header_e}")
+        print(f"{'-'*len(header_p):<35}  {'-'*len(header_e)}")
 
         # Impressão em colunas
         comprimento = max(len(players), len(enemies))
         for i in range(comprimento):
             p = players[i] if i < len(players) else {}
             e = enemies[i] if i < len(enemies) else {}
+
+            #Status player
             nome_p = p.get('Nome', '')
             hp_p   = f"HP: {p.get('hp','')}" if p else ''
+            defesa_p    = f"DEF: {p.get('defesa', '')}" if p else ''
+
+            #Status inimigo
             nome_e = e.get('Nome', '')
             hp_e   = f"HP: {e.get('hp','')}" if e else ''
-            print(f"{nome_p:<15} {hp_p:<8}    {nome_e:<20} {hp_e}")
+            defesa_e    = f"DEF: {e.get('defesa', '')}" if e else ''
+
+            print(f"{nome_p:<15} {hp_p:<8} {defesa_p:<8}    {nome_e:<20} {hp_e:<8} {defesa_e}")
         # === Fim do novo bloco ===
 
         continuar()
@@ -668,7 +747,15 @@ def achar_estrutura():
                     inventario.append(item_encontrado)
                     digitar(f"Você encontrou um item: {item_encontrado.nome}!")
                     digitar(f"{item_encontrado.descricao_curta}")
-                    digitar("Você guarda o item com cuidado antes de seguir seu caminho.")
+
+                    defesa_item = get_defesa(item_encontrado)
+                    if get_defesa(item_encontrado) > 0:
+                        player["defesa"] += get_defesa(item_encontrado)
+                        item_equipado =  item_encontrado
+                        digitar(f"A defesa do personagem aumentou em {get_defesa(item_encontrado)} pontos!")
+
+                    else:
+                        digitar("Você guarda o item com cuidado antes de seguir seu caminho.")
                 return
 
             else:
@@ -749,6 +836,7 @@ def abrir_inventario():
     categorias = {
         "Amuletos": [],
         "Consumiveis": [],
+        "Equipados": [],
         "Itens de Combate": []
     }
 
@@ -756,8 +844,13 @@ def abrir_inventario():
         if isinstance(item, dict):
             categorias["Amuletos"].append(item)
         else:
+            hp = get_hp(item)
+            defesa = get_defesa(item)
             raridade = get_raridade(item)
-            if raridade in ["Comum", "Incomum"]:
+
+            if defesa > 0:
+                categorias["Equipados"].append(item)
+            elif hp > 0 or raridade in ["Comum", "Incomum"]:
                 categorias["Consumiveis"].append(item)
             else:
                 categorias["Itens de Combate"].append(item)
