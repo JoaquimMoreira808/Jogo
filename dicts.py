@@ -137,12 +137,12 @@ inimigos = [
         "defesa": 3,
         "forca": 6
     },
-    {
-        "Nome": "Cavaleiro das Trevas",
-        "hp": 22,
-        "defesa": 5,
-        "forca": 5
-    }
+    # {
+    #     "Nome": "Cavaleiro das Trevas",
+    #     "hp": 22,
+    #     "defesa": 5,
+    #     "forca": 5
+    # }
 ]
 
 
@@ -153,34 +153,32 @@ inimigos = [
 
 estruturas = {
     "fortaleza": {
-        "sprite": """
+        "sprite": r"""
                 uuu       uuu
                uuu|=====uuu |
                | |======| |'|
 ^-/^-/^-/^-/^-/| | .==. | | |-^~/-^
 ^-/^-/^-/^- ^~ |___|##|___|/ ^~ ^ ^
 """,
-        "mensagem": "Uma fortaleza antiga, suas muralhas sussurram segredos de guerras passadas."
+        "mensagem": "uma fortaleza antiga, suas muralhas sussurram segredos de guerras passadas."
     },
     "lapide": {
-        "sprite": """
-                 __)(__
-           _____/      \\_____
-          |  _     ___   _   ||
+        "sprite": r"""
+             ______________   
+           /                \
+          /  _     ___   _   \
           | | \     |   | \  ||
           | |  |    |   |  | ||
           | |_/     |   |_/  ||
           | | \     |   |    ||
-          | |  \    |   |    ||
-          | |   \. _|_. | .  ||
+          | |  \.  _|_. | .  ||
           |                  ||
           |   Ana'be Atrix   ||
           |                  ||
-  *       | *   **    * **   |**      **
-   \))ejm97/.,(//,,..,,\||(,,.,\\,.((//
+/.,\))/.,(//,,..,,\||(,,.,\\,.((//(,,.\||(
 
 """,
-        "mensagem": "Uma lápide sob uma árvore que nunca floresce. Ainda pulsa o eco suave de um nome sussurrado por alguém que jamais a esqueceu."
+        "mensagem": "uma lápide sob uma árvore que nunca floresce. Ainda pulsa o eco suave de um nome sussurrado por alguém que jamais a esqueceu."
     },
     "ponte": {
         "sprite": """
@@ -190,7 +188,7 @@ estruturas = {
   ejm ~~~~~|xx|~~~~~~~~~~~~~|x|~~~ ~~  ~   ~
 
 """,
-        "mensagem": "Uma ponte de pedra sobre um rio sereno. Algo parece observar por baixo dela..."
+        "mensagem": "uma ponte de pedra sobre um rio sereno. Algo parece observar por baixo dela..."
     },
     "torre_mistica": {
         "sprite": """
@@ -207,10 +205,10 @@ estruturas = {
       -.    `:/'    _.))        .--.
              ||   .'.-'     _..-.. _.-.
 """,
-        "mensagem": "Uma torre mística que se ergue solitária, irradiando energia arcana no topo."
+        "mensagem": "uma torre mística que se ergue solitária, irradiando energia arcana no topo."
     },
     "cabana": {
-        "sprite": """
+        "sprite": r"""
                    )
                  _(
              ___|_|_________
@@ -227,7 +225,7 @@ estruturas = {
   ~^~ ^" ^"  ^~^   ^"   ~^~    ^~^~(()(()
   ^"     ^~^   ~^~   ^"    ^~^   ~~^~""^
 """,
-        "mensagem": "Uma cabana isolada, fumaça escapa pela chaminé. Alguém ainda vive aqui?"
+        "mensagem": "uma cabana isolada, fumaça escapa pela chaminé. Alguém ainda vive aqui?"
     }
 }
 
@@ -236,4 +234,23 @@ estruturas = {
 # ==========================
 
 
-#boss e inimigos
+boss1_party = [
+    {
+        "Nome": "Aeli, um peão.",
+        "hp": 18,          # um pouco mais que o Peão (16)
+        "defesa": 5,       # um pouco maior que o Peão (4)
+        "forca": 6         # um pouco mais que o Peão (5)
+    },
+    {
+        "Nome": "Tharn, um peão.",
+        "hp": 22,          # um pouco menos que a Torre (20)
+        "defesa": 6,       # igual à Torre (6)
+        "forca": 6         # mais forte que Torre (4) e Peão (5)
+    },
+    {
+        "Nome": "Maegra, a torre",
+        "hp": 35,          # mais resistente que a Torre (20) e Cavalo (13)
+        "defesa": 9,       # bem defensiva, maior que todos
+        "forca": 10        # dano forte, maior que o Cavalo (7)
+    }
+]

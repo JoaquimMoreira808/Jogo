@@ -29,16 +29,29 @@ def digitar(texto: str, delay: float = 0.03):
 #=================================================================
 #Varíaveis globais
 
+boss1_encounter = False
+
 starts = 1
+
+progressao = 0
 
 almas = []
 
 bestiario = []
 
+RESET = "\033[0m"
+BRANCO = "\033[97m"
+AZUL = "\033[94m"
+VERDE = "\033[92m"
+ROXO = "\033[95m"
+AMARELO = "\033[93m"
+VERMELHO = "\033[91m"
+CINZA = "\033[90m"
+
 #=================================================================
 
 def continuar():
-    input("...")
+    input(f"{CINZA}Pressione Enter para continuar...{RESET}")
 
 #=================================================================
 #MENU DE DEBUG
@@ -50,10 +63,11 @@ def debug():
         print("║ 1. Combate                     ║")
         print("║ 2. Encontrar estrutura         ║")
         print("║ 3. Acampamento                 ║")
+        print("║ 4. Progressao                  ║")
         print("║ 0. Menu                        ║")
         print("╚════════════════════════════════╝")
 
-
+        global progressao
         escolha = input("Escolha uma opção: ")
 
         if escolha == "1":
@@ -63,7 +77,10 @@ def debug():
         elif escolha == "2":
             achar_estrutura()
         elif escolha == "3":
-            acampamento_aventureiros()  
+            acampamento_aventureiros()
+        elif escolha == "4":
+            num = int(input("Número progressão:"))
+            progressao += num
         else:
             print("Opção inválida. Tente novamente.")
 
@@ -87,7 +104,7 @@ def menu():
         if escolha == "1":
             seguir_caminho()
         elif escolha == "2":
-            print("Você abre o mapa e observa a região.")
+            ver_mapa()
         elif escolha == "3":
             abrir_inventario()  
         elif escolha == "4":
@@ -105,6 +122,10 @@ def menu():
             print("Opção inválida. Tente novamente.")
             continuar()
 
+#=================================================================
+
+def ver_mapa():
+    print(f"Você já seguiu por {progressao} casas.")
 #=================================================================
 
 def menu1():
@@ -277,14 +298,16 @@ def reviver_aliados(almas):
 #==================================================================
 
 def gameover():
-    global head, tail, almas
+    global head, tail, almas, progressao
     limpar_terminal()
     print(gameover_art)
     continuar()
     head = Node(copy.deepcopy(player))
     tail = head
     almas = []
+    progressao = 0
     menu1()
+
 
 #==================================================================
 
@@ -441,7 +464,7 @@ def adicionar_bestiario(head_bestiario, node):
 def usar_item(player_node):
     if not inventario:
         print("Você não tem itens no inventário para usar.")
-        input("Pressione Enter para continuar...")
+        continuar()
         return 0
 
     print("\nItens no inventário:")
@@ -554,7 +577,7 @@ def combate(head_player, head_inimigos, almas, bestiario):
 
     limpar_terminal()
     print("=" * 27)
-    print("        Início do Combate       ")
+    print(f"{VERMELHO}        Início do Combate       {RESET}")
     print("=" * 27)
     print()
 
@@ -563,34 +586,13 @@ def combate(head_player, head_inimigos, almas, bestiario):
         defensor = combate_inimigos
 
         print("Sua vez! O que deseja fazer?")
-        print("1. Atacar")
+        print("Enter. Atacar")
         print("2. Usar item")
         escolha = input("Escolha: ")
 
-        #Player ataca
-        if escolha == "1":
-            forca = atacante.data.get("forca", 0)
-            defesa = defensor.data.get("defesa", 0)
-
-            print(f"{atacante.data['Nome']} ataca {defensor.data['Nome']} causando {forca} de dano!")
-
-            if defesa > 0:
-                if forca <= defesa:
-                    defensor.data['defesa'] -= forca
-                    print(f"{defensor.data['Nome']} absorveu o dano com a defesa!")
-                else:
-                    dano_restante = forca - defesa
-                    defensor.data['defesa'] = 0
-                    defensor.data['hp'] -= dano_restante
-                    print(f"{defensor.data['Nome']} teve a defesa quebrada e perdeu {dano_restante} de HP!")
-            else:
-                defensor.data['hp'] -= forca
-                print(f"{defensor.data['Nome']} não tinha defesa e perdeu {forca} de HP!")
-
-            input("Pressione Enter para continuar...")
 
         #Player ataca com itens, restaura hp ou aumenta a defesa
-        elif escolha == "2":
+        if escolha == "2":
             dano_extra = usar_item(atacante)
             if dano_extra > 0:
                 defensor.data['hp'] -= dano_extra
@@ -599,13 +601,32 @@ def combate(head_player, head_inimigos, almas, bestiario):
                 print("Você não usou nenhum item ou o item não causou dano.")
                 input("Pressione Enter para continuar...")
 
+        #Player ataca
+        
         else:
-            print("Opção inválida, você perde o turno.")
+            forca = atacante.data.get("forca", 0)
+            defesa = defensor.data.get("defesa", 0)
+
+            print(f"{VERMELHO}{atacante.data['Nome']} ataca {defensor.data['Nome']} causando {forca} de dano!{RESET}")
+
+            if defesa > 0:
+                if forca <= defesa:
+                    defensor.data['defesa'] -= forca
+                    print(f"{AZUL}{defensor.data['Nome']} absorveu o dano com a defesa!{RESET}")
+                else:
+                    dano_restante = forca - defesa
+                    defensor.data['defesa'] = 0
+                    defensor.data['hp'] -= dano_restante
+                    print(f"{AMARELO}{defensor.data['Nome']} teve a defesa quebrada e perdeu {dano_restante} de HP!{RESET}")
+            else:
+                defensor.data['hp'] -= forca
+                print(f"{AMARELO}{defensor.data['Nome']} não tinha defesa e perdeu {forca} de HP!{RESET}")
+
             input("Pressione Enter para continuar...")
 
         # Verifica se inimigo morreu
         if defensor.data['hp'] <= 0:
-            print(f"{defensor.data['Nome']} foi derrotado!")
+            print(f"{AMARELO}{defensor.data['Nome']} foi derrotado!")
             head_player = morreu(defensor, head_player)
 
             inimigo_morto = copy.deepcopy(defensor.data)
@@ -615,32 +636,29 @@ def combate(head_player, head_inimigos, almas, bestiario):
             combate_inimigos = remover_node(combate_inimigos, defensor)
             continuar()
         
-
-        continuar()
-
         #Inimigo ataca
         forca = defensor.data.get("forca", 0)
         defesa = atacante.data.get("defesa", 0)
 
-        print(f"{defensor.data['Nome']} ataca {atacante.data['Nome']} causando {forca} de dano!")
+        print(f"{VERMELHO}{defensor.data['Nome']} ataca {atacante.data['Nome']} causando {forca} de dano!{RESET}")
 
         if defesa > 0:
             if forca <= defesa:
                 atacante.data['defesa'] -= forca
-                print(f"{atacante.data['Nome']} absorveu o dano com a defesa!")
+                print(f"{AZUL}{atacante.data['Nome']} absorveu o dano com a defesa!{RESET}")
             else:
                 dano_restante = forca - defesa
                 atacante.data['defesa'] = 0
                 atacante.data['hp'] -= dano_restante
-                print(f"{atacante.data['Nome']} teve a defesa quebrada e perdeu {dano_restante} de HP!")
+                print(f"{AMARELO}{atacante.data['Nome']} teve a defesa quebrada e perdeu {dano_restante} de HP!{RESET}")
         else:
             atacante.data['hp'] -= forca
-            print(f"{atacante.data['Nome']} não tinha defesa e perdeu {forca} de HP!")
+            print(f"{VERMELHO}{atacante.data['Nome']} não tinha defesa e perdeu {forca} de HP!{RESET}")
 
-        input("Pressione Enter para continuar...")
-
+        continuar()
+        
         if atacante.data['hp'] <= 0:
-            print(f"{atacante.data['Nome']} foi derrotado!")
+            print(f"{VERMELHO}{atacante.data['Nome']} foi derrotado!{RESET}")
             head_player = morreu(atacante, head_player)
 
             morto = copy.deepcopy(atacante.data)
@@ -689,7 +707,7 @@ def combate(head_player, head_inimigos, almas, bestiario):
             defesa_e    = f"DEF: {e.get('defesa', '')}" if e else ''
 
             print(f"{nome_p:<15} {hp_p:<8} {defesa_p:<8}    {nome_e:<20} {hp_e:<8} {defesa_e}")
-        # === Fim do novo bloco ===
+        # === Fim do novo bloco ===f
 
         continuar()
 
@@ -708,9 +726,7 @@ def combate(head_player, head_inimigos, almas, bestiario):
 
 #ESTRUTURA
 def achar_estrutura():
-    mensagem = random.choice(inicios_caminho)
     estrutura_nome, dados = random.choice(list(estruturas.items()))
-    digitar(mensagem)
     digitar(dados["mensagem"])
     print(dados["sprite"])
     continuar()
@@ -809,6 +825,31 @@ def encontrar_inimigo():
     limpar_terminal()
     combate(head, head_inimigos, almas, bestiario)
 
+#==================================================================
+
+def encontrar_inimigo_definido(party_dict):
+    if not isinstance(party_dict, list) or not party_dict:
+        print("Party inválida.")
+        return
+
+    head_inimigos = Node(party_dict[0])
+    tail_inimigos = head_inimigos
+
+    print(f"{party_dict[0]['Nome']}")
+    print(f"  HP    : {party_dict[0]['hp']}")
+    print(f"  Força : {party_dict[0]['forca']}")
+    print(f"  Defesa: {party_dict[0]['defesa']}\n")
+
+    for inimigo in party_dict[1:]:
+        tail_inimigos = add_node(tail_inimigos, inimigo)
+        print(f"{inimigo['Nome']}")
+        print(f"  HP    : {inimigo['hp']}")
+        print(f"  Força : {inimigo['forca']}")
+        print(f"  Defesa: {inimigo['defesa']}\n")
+
+    input("\nIniciar o combate...\n")
+    limpar_terminal()
+    combate(head, head_inimigos, almas, bestiario)
 
 #==================================================================
 
@@ -818,9 +859,26 @@ pesos = [1, 1, 1]
 
 def seguir_caminho():
     mensagem = random.choice(inicios_caminho)
-    digitar(mensagem)
-    evento = random.choices(acoes, weights=pesos, k=1)[0]
-    evento()
+    global progressao
+    progressao += 1
+    if progressao == 1:
+        print("""
+=================================
+    O Refúgio Dos Esquecidos              
+=================================
+              """)
+        digitar(mensagem)
+        acampamento_aventureiros()
+    elif progressao == 8:
+        boss1()
+    elif progressao == 16:
+        print("Teste")
+    elif progressao == 24:
+        print("Teste")
+    else:
+        digitar(mensagem)
+        evento = random.choices(acoes, weights=pesos, k=1)[0]
+        evento()
 
 #==================================================================    
 
@@ -908,10 +966,42 @@ def abrir_inventario():
                 print(f"\nNome: {get_nome(item_escolhido)}")
                 print(f"Descrição: {get_descricao_longa(item_escolhido)}")
                 print(f"Raridade: {get_raridade(item_escolhido)}")
-                input("\nPressione Enter para voltar à lista de itens.")
+                continuar()
 
         except ValueError:
             print("Opção inválida. Tente novamente.")
             continuar()
+
+#================================================================== 
+
+def boss1():
+    global boss1_encounter
+    if boss1_encounter == True:
+        digitar(f"{CINZA}Maegra ergue-se por completo. Sua voz soa como uma catedral desabando:{RESET}")
+        digitar(f"{BRANCO}“Tu não passas. É nosso dever não deixar que a história se repita, agora morras, peão.”{RESET}")
+        encontrar_inimigo_definido(boss1_party)
+    else:
+        digitar(f"{CINZA}O chão range como se estivesse suspirando. Três figuras estão imóveis diante dos portões negros.{RESET}\n")
+        digitar(f"{CINZA}O jogador se aproxima, revelando duas silhuetas baixas em armaduras partidas, um ao lado do outro.{RESET}\n") 
+        digitar(f"{CINZA}Entre eles, uma estrutura colosal de pedra e carne, imóvel como o tempo.{RESET}\n")
+        
+        digitar(f"{CINZA}O vento sopra. Um sino distante toca. Um sussurro ecoa pela névoa, vindo da Rainha Branca:{RESET}")
+        digitar(f"{BRANCO}“Aeli e Tharn, peões, como tu. Maegra, um bastião. Eles não guardam o caminho por ódio,{RESET}") 
+        digitar(f"{BRANCO}querido peão... mas por amor a uma velha promessa.”{RESET}\n")
+        
+        digitar(f"{CINZA}Aeli dá um passo à frente. Seu elmo, partido ao meio, revela um olho ainda aceso.{RESET}")
+        digitar(f"{BRANCO}“Entendo sua vontade, peão. A bruxa diz coisas pra você.”{RESET}\n")
+        
+        digitar(f"{CINZA}Tharn resmunga, sem tirar os olhos do jogador:{RESET}")
+        digitar(f"{BRANCO}“Além daqui, apenas ruína, não deixaremos outro experimentá-la.”{RESET}\n")
+        
+        digitar(f"{CINZA}Maegra ergue-se por completo. Sua voz soa como uma catedral desabando:{RESET}")
+        digitar(f"{BRANCO}“Tu não passas. É nosso dever não deixar que a história se repita, agora morras, peão.”{RESET}")
+
+        digitar("Prepare-se para enfrentar:")
+        print(boss1_art)
+        boss1_encounter = True
+        encontrar_inimigo_definido(boss1_party)
+
 
 #================================================================== 
