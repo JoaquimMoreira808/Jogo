@@ -166,7 +166,7 @@ class Node:
 
 ## :chart_with_upwards_trend: Futuras Expansões
 
-- Sistema de mapa com movimentação.
+- Sistema rodando fora do terminar do VS Code.
 - Habilidades e magias.
 - Sistema de escolha de caminhos ramificados.
 
