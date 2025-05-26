@@ -172,7 +172,7 @@ def mostrar_party():
 
 #==================================================================
 
-#HELPER PARA O SISTEMA DE ITENS E AMULETOS
+#HELPPER PARA O SISTEMA DE ITENS E AMULETOS
 def get_nome(item):
     if isinstance(item, dict):
         return item.get('nome', 'Item Desconhecido')
@@ -229,7 +229,9 @@ def get_defesa(item):
         return int(getattr(item, 'defesa', 0) or 0)
     except (ValueError, TypeError):
         return 0
-    
+
+#Transforma as tuplas em dicionários
+pesos_raridade_dict = dict(pesos_raridade)
 #==================================================================
 def mostrar_almas():
     if not almas:
@@ -754,7 +756,7 @@ def achar_estrutura():
             
             if chance == "item":
                 itens = list(itens_possiveis_encontrar.values())
-                pesos = [pesos_raridade.get(get_raridade(item), 1) for item in itens]
+                pesos = [pesos_raridade_dict.get(get_raridade(item), 1) for item in itens]
                 item_encontrado = random.choices(itens, weights=pesos, k=1)[0]
                 
                 if item_encontrado.raridade in ["Raro", "Lendário"] and item_encontrado in inventario:

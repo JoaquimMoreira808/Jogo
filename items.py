@@ -16,13 +16,13 @@ class Item:
         return f"<Item: {self.nome} (Raridade: {self.raridade})>"
         
 #Raridade dos itens
-pesos_raridade = {
-    "Comum": 70,
-    "Incomum": 45,
-    "Raro": 35,
-    "Épico": 15,
-    "Lendário": 10
-}
+pesos_raridade = (
+    ("Comum", 70),
+    ("Incomum", 45),
+    ("Raro", 25),
+    ("Épico", 15),
+    ("Lendário", 10)
+)
 
 # ==========================
 # Itens
