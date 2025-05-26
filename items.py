@@ -179,3 +179,26 @@ itens_possiveis_encontrar = {
     "espada_rei_caido": espada_rei_caido,
 
 }
+
+#Dicionario amuletos
+fragmentos_catalogo = {
+    "Fragmento de Força":        {"atributo": "força",        "bonus": 2},
+    "Fragmento de Resistência":  {"atributo": "resistência",  "bonus": 2},
+    "Fragmento de Vida":         {"atributo": "vida",         "bonus": 5},
+    "Fragmento de Capacidade":   {"atributo": "capacidade",   "bonus": 1},
+}
+
+amuletos_catalogo = {
+    "Amuleto do Guerreiro": {
+        "requer": frozenset({"Fragmento de Força", "Fragmento de Vida"}),
+        "atributos": {"força": +2, "vida": +5},
+    },
+    "Amuleto do Guardião": {
+        "requer": frozenset({"Fragmento de Resistência", "Fragmento de Vida"}),
+        "atributos": {"resistência": +3, "vida": +5},
+    },
+    "Amuleto do Arsenal": {
+        "requer": frozenset({"Fragmento de Força", "Fragmento de Capacidade"}),
+        "atributos": {"força": +2, "capacidade": +1},
+    },
+}

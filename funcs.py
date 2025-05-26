@@ -197,6 +197,54 @@ def get_descricao_longa(item):
     else:
         return getattr(item, 'descricao_longa', 'Sem descrição detalhada.')
     
+#==================================================================
+
+#Amuletos
+fragmentos_coletados: set[str] = set()
+amuletos_coletados: set[str] = set()
+
+def tentar_drop_fragmento(chance=0.5):
+    if random.random() >= chance:
+        print("Nenhum fragmento desta vez.")
+        return
+        
+
+    frag = random.choice(list(fragmentos_catalogo))
+    if frag in fragmentos_coletados:
+        print(f"Você achou outro {frag}, mas já tem esse.")
+    else:
+        fragmentos_coletados.add(frag)
+        atr = fragmentos_catalogo[frag]["atributo"]
+        bonus = fragmentos_catalogo[frag]["bonus"]
+        print(f"Pegou {frag}! (+{bonus} {atr})")
+        inventario.append
+   
+
+#==================================================================
+#aplicação de atributos adicionais aos personagens ao montar um amuleto
+def aplicar_atributos_personagens(fragmento):
+
+    global party_capacity #para aplicar o bonus de atributo a todos os personagens da party
+
+    dados_frag = fragmentos_catalogo[fragmento]
+    atr  = dados_frag["atributo"]
+    val  = dados_frag["bonus"]
+
+  
+    if atr == "força":
+        for char in personagens + [player]:
+            char["forca"] += val
+    elif atr == "resistência":
+        for char in personagens + [player]:
+            char["defesa"] += val
+    elif atr == "vida":
+        for char in personagens + [player]:
+            char["hp"] += val
+    elif atr == "capacidade":
+        party_capacity += val   
+
+    
+    
 #Caracteristicas dos itens
 def get_dano(item):
     try:
@@ -258,13 +306,56 @@ def menu_fogueira(almas):
                     if escolha == '1':
                         reviver_aliados(almas)
                     elif escolha == '2':
-                        inventario.append(gerar_amuletos())
+                        inventario.append(montar_amuletos_na_fogueira())
                         print("Você montou um amuleto e adicionou ao seu invetário.")
                     elif escolha == '3':
                         print("Você apaga a fogueira e se retira.")
                         break
                     else: 
                         ("Opção inválida tente novamente.")
+
+
+def montar_amuletos_na_fogueira():
+    disponiveis = [
+        nome for nome, info in amuletos_catalogo.items()
+        if info["requer"].issubset(fragmentos_coletados)
+        and nome not in amuletos_coletados
+    ]
+
+    if not disponiveis:
+        print("\n Não dá pra criar nenhum amuleto agora.")
+        return
+
+    print("\n Amuletos disponíveis:")
+    for idx, nome in enumerate(disponiveis, 1):
+        req = ", ".join(amuletos_catalogo[nome]["requer"])
+        print(f"{idx}. {nome}  (requer: {req})")
+
+    try:
+        escolha = int(input("Escolha o número: ")) - 1
+        if escolha not in range(len(disponiveis)):
+            raise ValueError
+    except ValueError:
+        print("Escolha inválida.")
+        return
+
+    nome_amuleto = disponiveis[escolha]
+    dados = amuletos_catalogo[nome_amuleto]
+
+    # Consome fragmentos
+    fragmentos_usados = dados["requer"]
+    fragmentos_coletados.difference_update(fragmentos_usados)
+    amuletos_coletados.add(nome_amuleto)
+
+    # Aplica buffs globais por fragmento utilizado
+    for frag in fragmentos_usados:
+        aplicar_atributos_personagens(frag)
+
+    print(f"\nForjou **{nome_amuleto}**!")
+    for k, v in dados["atributos"].items():
+        sinal = "+" if v >= 0 else ""
+        print(f"   • {k}: {sinal}{v}")
+    print("Todos os aliados sentiram o poder de um novo amuleto!\n")
    
 #==================================================================
 
@@ -313,22 +404,8 @@ def gameover():
 
 #==================================================================
 
-#GERADOR DE AMULETOS
-def gerar_amuletos():
-    atributos_possiveis = ['força', 'resistência', 'vida', 'capacidade']
-    escolhidos = random.sample(atributos_possiveis, 2)
 
-    amuleto = {
-        'nome': 'Amuleto Misterioso',
-        'descricao_curta': f"+{escolhidos[0]} / +{escolhidos[1]}",
-        'descricao_longa': f"Este amuleto confere bônus em {escolhidos[0]} e {escolhidos[1]}. Suas origens são incertas, mas emana uma energia ancestral.",
-        'atributos': {escolhidos[0]: random.randint(1, 5), escolhidos[1]: random.randint(1, 5)}
-    }
-
-    return amuleto
-
-    
-#==================================================================
+   
 
 #ACAMPAMENTOS DOS AVENTUREIROS
 def acampamento_aventureiros():
@@ -445,6 +522,7 @@ def remover_tail(head):
 #Definição de party
 head = Node(copy.deepcopy(player))
 tail = head
+party_capacidade = len(personagens)
 #==================================================================
 
 #AÇÕES DO GAME
@@ -636,6 +714,10 @@ def combate(head_player, head_inimigos, almas, bestiario):
             bestiario.append(inimigo_morto)
 
             combate_inimigos = remover_node(combate_inimigos, defensor)
+
+            tentar_drop_fragmento()
+
+
             continuar()
         
         #Inimigo ataca
@@ -719,8 +801,8 @@ def combate(head_player, head_inimigos, almas, bestiario):
         return
 
     print("Todos os inimigos foram derrotados. Você venceu o combate!")  
-    for _ in range(random.randint(1, 3)):
-        inventario.append(gerar_amuletos())
+
+       
 
     continuar()
 
@@ -888,13 +970,14 @@ def seguir_caminho():
 inventario = []
 
 def abrir_inventario():
-    if not inventario:
+    if not inventario and not fragmentos_coletados:
         print("\nSeu inventário está vazio.")
         continuar()
         return
 
     categorias = {
         "Amuletos": [],
+        "Fragmentos Amuletos": [],
         "Consumiveis": [],
         "Equipados": [],
         "Itens de Combate": []
@@ -914,6 +997,9 @@ def abrir_inventario():
                 categorias["Consumiveis"].append(item)
             else:
                 categorias["Itens de Combate"].append(item)
+
+    for frag in fragmentos_coletados:
+        categorias["Fragmentos Amuletos"].append(item)
 
     while True:
         print("\n--- Inventário: ---")
