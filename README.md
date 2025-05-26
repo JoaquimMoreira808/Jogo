@@ -5,7 +5,7 @@
 ---
 
 > [!IMPORTANT]
-> :scroll: Licença
+> :scroll: Licença<br>
 > Projeto desenvolvido para fins educacionais na disciplina de Estrutura de Dados. Livre para modificar e evoluir.
 >
 > **Obs:** Todas as informações sobre os colaboradores e a Universidade se encontram no fim deste README.
