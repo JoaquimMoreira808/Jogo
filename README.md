@@ -5,7 +5,8 @@
 ---
 
 > [!IMPORTANT]
-> :scroll: Licença<br>
+> :scroll: Licença:
+> 
 > Projeto desenvolvido para fins educacionais na disciplina de Estrutura de Dados. Livre para modificar e evoluir.
 >
 > **Obs:** Todas as informações sobre os colaboradores e a Universidade se encontram no fim deste README.
@@ -14,22 +15,22 @@
 
 ## :open_file_folder: Estrutura do Projeto
 
-- `funcs.py`: Loop principal do jogo e sistema de combate
-- `items.py`: Itens históricos com descrições curtas e longas
-- `dicts.py`: Lista duplamente encadeada de aliados e Gerador de estruturas
-- `arts.py`: Artes ASCII dos objetivos
-- `list.py`: Frases geradas para o sistema
+- `funcs.py`: Loop principal do jogo e sistema de combate.
+- `items.py`: Itens históricos com descrições curtas e longas.
+- `dicts.py`: Lista duplamente encadeada de aliados e Gerador de estruturas.
+- `arts.py`: Artes ASCII dos objetivos.
+- `list.py`: Frases geradas para o sistema.
 
 ---
 
 ## :crossed_swords: Funcionalidades
 
-- Combate por turnos entre personagens e inimigos
-- Inventário dividido por categorias (consumíveis, amuletos, armas, etc.)
-- Sistema de estruturas com eventos e recompensas
-- Uso de itens com atributos (dano, defesa, HP)
-- Histórico de eventos e inimigos derrotados
-- Gerenciamento de grupo com lista duplamente encadeada
+- Combate por turnos entre personagens e inimigos.
+- Inventário dividido por categorias (consumíveis, amuletos, armas, etc.).
+- Sistema de estruturas com eventos e recompensas.
+- Uso de itens com atributos (dano, defesa, HP).
+- Histórico de eventos e inimigos derrotados.
+- Gerenciamento de grupo com lista duplamente encadeada.
 
 ---
 
@@ -37,15 +38,15 @@
 
 ### Programação
 
-- Modularização de arquivos e funções
-- Orientação a objetos
-- Funções puras e reuso de código
+- Modularização de arquivos e funções.
+- Orientação a objetos.
+- Funções puras e reuso de código.
 
 ### Estruturas de Dados
 
-- Listas, tuplas, sets, dicionários
-- Listas encadeadas duplas personalizadas
-- Controle de fluxo baseado em estruturas
+- Listas, tuplas, sets, dicionários.
+- Listas encadeadas duplas personalizadas.
+- Controle de fluxo baseado em estruturas.
 
 ---
 
@@ -58,9 +59,9 @@ O sistema **Dark Crow** foi planejado com base nos principais tipos de estrutura
 ### 1. **Listas (`list`) – incluindo Pilhas e Filas**
 
 - **Onde é usada:**
-  - Inventário de itens (como lista de objetos `Item`)
-  - Lista de almas obtidas (fila)
-  - Histórico de eventos e bestiário
+  - Inventário de itens (como lista de objetos `Item`).
+  - Lista de almas obtidas (fila).
+  - Histórico de eventos e bestiário.
 
 - **Justificativa:**
   - Listas permitem inserção, remoção e iteração simples.
@@ -98,9 +99,9 @@ O sistema **Dark Crow** foi planejado com base nos principais tipos de estrutura
 ### 4. **Dicionários (`dict`)**
 
 - **Onde é usada:**
-  - Definição de personagens (`player`, `inimigo`)
-  - Armazenamento de dados dos itens, estruturas, eventos
-  - Uso de `defaultdict(int)` para agrupamento de consumíveis
+  - Definição de personagens (`player`, `inimigo`).
+  - Armazenamento de dados dos itens, estruturas, eventos.
+  - Uso de `defaultdict(int)` para agrupamento de consumíveis.
 
 - **Justificativa:**
   - Proporcionam acesso direto por chave, com tempo constante (`O(1)`).
@@ -112,7 +113,7 @@ O sistema **Dark Crow** foi planejado com base nos principais tipos de estrutura
 ### 5. **Listas Encadeadas (Duplamente Encadeadas)**
 
 - **Onde é usada:**
-  - Controle do grupo de aliados em combate
+  - Controle do grupo de aliados em combate.
 
 - **Justificativa:**
   - A estrutura de lista **duplamente encadeada** permite:
@@ -147,27 +148,27 @@ class Node:
 
 ## :repeat: Fluxo de Jogo
 
-- `menu()` é o hub principal
-- `combate()` realiza batalhas com cópias temporárias da party
-- `menu_fogueira()` permite reviver aliados e montar amuletos
-- Eventos aleatórios (estrutura, acampamento, combate) controlam a progressão
-- `gameover()` reseta o jogo ao estado inicial com segurança
+- `menu()` é o hub principal.
+- `combate()` realiza batalhas com cópias temporárias da party.
+- `menu_fogueira()` permite reviver aliados e montar amuletos.
+- Eventos aleatórios (estrutura, acampamento, combate) controlam a progressão.
+- `gameover()` reseta o jogo ao estado inicial com segurança.
 
 ---
 
 ## :gear: Tecnologias e Requisitos
 
-- Python 3.10+
-- Estrutura modular de arquivos
-- Rodar com `python game.py`
+- Python 3.10+.
+- Estrutura modular de arquivos.
+- Rodar com `python game.py`.
 
 ---
 
 ## :chart_with_upwards_trend: Futuras Expansões
 
-- Sistema de mapa com movimentação
-- Habilidades e magias
-- Sistema de escolha de caminhos ramificados
+- Sistema de mapa com movimentação.
+- Habilidades e magias.
+- Sistema de escolha de caminhos ramificados.
 
 ---
 ## Informacões Adicionais
@@ -178,7 +179,7 @@ class Node:
 - **Nome:** José Vitor de Almida Lima | **RA:** 1994104 :man_technologist:
 
 ### Informações Acadêmicas
-- Universidade: UNIMAR - Universidade de Marília :school:
-- Curso: Analise e Desenvolvimento de Sistemas :mortar_board:
-- Disciplina: Estrutura de Dados :computer:
-- Docente: Gustavo Marttos Caceres Pereira :man_teacher:
+- **Universidade:** UNIMAR - Universidade de Marília :school:
+- **Curso:** Analise e Desenvolvimento de Sistemas :mortar_board:
+- **Disciplina:** Estrutura de Dados :computer:
+- **Docente:** Gustavo Marttos Caceres Pereira :man_teacher:
