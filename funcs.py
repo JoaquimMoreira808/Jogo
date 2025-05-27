@@ -255,26 +255,30 @@ def tentar_drop_fragmento(chance=0.5):
 
 #==================================================================
 #aplicação de atributos adicionais aos personagens ao montar um amuleto
-def aplicar_atributos_personagens(fragmento):
+def aplicar_bonus_amuleto(amuletos):
+        for amuleto in amuletos:
+            for frag in amuleto["fragmentos"]:
+                dados_frag = fragmentos_catalogo.get(frag)
+                if not dados_frag:
+                    continue
 
-    global party_atributos #para aplicar o bonus de atributo a todos os personagens da party
+                atr = dados_frag["atributo"]
+                val = dados_frag["bonus"]
 
-    dados_frag = fragmentos_catalogo[fragmento]
-    atr  = dados_frag["atributo"]
-    val  = dados_frag["bonus"]
+                if atr == "força":
+                    for char in personagens + [player]:
+                        char["forca"] += val
+                elif atr == "resistência":
+                    for char in personagens + [player]:
+                        char["defesa"] += val
+                elif atr == "vida":
+                    for char in personagens + [player]:
+                        char["hp"] += val
+                elif atr == "capacidade":
+                    global party_capacidade
+                    party_capacidade += val
 
-  
-    if atr == "força":
-        for char in personagens + [player]:
-            char["forca"] += val
-    elif atr == "resistência":
-        for char in personagens + [player]:
-            char["defesa"] += val
-    elif atr == "vida":
-        for char in personagens + [player]:
-            char["hp"] += val
-    elif atr == "capacidade":
-        party_capacidade += val   
+
 
 
 #Transforma as tuplas em dicionários
@@ -305,16 +309,20 @@ def menu_fogueira(almas):
                     if escolha == '1':
                         reviver_aliados(almas)
                     elif escolha == '2':
-                        inventario.append(montar_amuletos_na_fogueira())
-                        print("Você montou um amuleto e adicionou ao seu invetário.")
-                    elif escolha == '3':
+                        sucesso = montar_amuletos_na_fogueira()
+                        if sucesso:
+                            novo_amu = montar_amuletos_na_fogueira()
+                            inventario.append(novo_amu)
+                            aplicar_bonus_amuleto([novo_amu])
+                            print("Você montou um amuleto e os atributos foram aplicados aos personagens.")
+                    elif escolha =='3':
                         print("Você apaga a fogueira e se retira.")
                         break
-                    else: 
+                    else:
                         ("Opção inválida tente novamente.")
 
 
-def montar_amuletos_na_fogueira():
+def montar_amuletos_na_fogueira() -> bool:
     disponiveis = [
         nome for nome, info in amuletos_catalogo.items()
         if info["requer"].issubset(fragmentos_coletados)
@@ -322,40 +330,40 @@ def montar_amuletos_na_fogueira():
     ]
 
     if not disponiveis:
-        print("\n Você não possui fragmentos suficientes.")
-        return
+        print("\nVocê não possui fragmentos suficientes para forjar um amuleto.")
+        return False
+    else:
+        print("\nAmuletos disponíveis:")
+        for idx, nome in enumerate(disponiveis, 1):
+            req = ", ".join(sorted(amuletos_catalogo[nome]["requer"]))
+            print(f"{idx}. {nome}  (requer: {req})")
 
-    print("\n Amuletos disponíveis:")
-    for idx, nome in enumerate(disponiveis, 1):
-        req = ", ".join(amuletos_catalogo[nome]["requer"])
-        print(f"{idx}. {nome}  (requer: {req})")
+        try:
+            escolha = int(input("Escolha o número (0 para cancelar): ")) - 1
+            if escolha == -1:
+                print("Forja cancelada.")
+                return False
+            if escolha not in range(len(disponiveis)):
+                raise ValueError
+        except ValueError:
+            print("Escolha inválida.")
+            return False
 
-    try:
-        escolha = int(input("Escolha o número: ")) - 1
-        if escolha not in range(len(disponiveis)):
-            raise ValueError
-    except ValueError:
-        print("Escolha inválida.")
-        return
+        nome_amuleto = disponiveis[escolha]
+        dados = amuletos_catalogo[nome_amuleto]
+        fragmentos_coletados.difference_update(dados["requer"])
+        amuletos_coletados.add(nome_amuleto)
 
-    nome_amuleto = disponiveis[escolha]
-    dados = amuletos_catalogo[nome_amuleto]
+        aplicar_bonus_amuleto([{"fragmentos": list(dados["requer"])}])
 
-    # Consome fragmentos
-    fragmentos_usados = dados["requer"]
-    fragmentos_coletados.difference_update(fragmentos_usados)
-    amuletos_coletados.add(nome_amuleto)
+        print(f"\nForjou {AZUL}**{nome_amuleto}**{RESET}!")
+        for atributo, bonus in dados["atributos"].items():
+            sinal = "+" if bonus >= 0 else ""
+            print(f"   • {atributo}: {sinal}{bonus}")
+        print("Todos os aliados sentiram o poder de um novo amuleto!\n")
 
-    # Aplica buffs globais por fragmento utilizado
-    for frag in fragmentos_usados:
-        aplicar_atributos_personagens(frag)
+    return True
 
-    print(f"\nForjou {AZUL}**{nome_amuleto}**{RESET}!")
-    for k, v in dados["atributos"].items():
-        sinal = "+" if v >= 0 else ""
-        print(f"   • {k}: {sinal}{v}")
-    print("Todos os aliados sentiram o poder de um novo amuleto!\n")
-   
 #==================================================================
 
 #BESTÁRIO
@@ -371,19 +379,34 @@ def visualizar_bestiario():
 #==================================================================
 #Reviver aliados
 def reviver_aliados(almas):
-    global tail
-    
+    global head, tail
+    tail = obter_ultimo_node(head)
 
     if not almas:
       print("Não há nenhuma alma para ser restaurada.")
       return
+    
+    count = 0
+    atual = head
+    while atual:
+        count += 1
+        atual = atual.next
+    
+    if count >= 4 and not possui_amuletos_capacidade_extra():
+        print("Seu grupo já tem 4 membros. Você precisa de um Amuleto do Arsenal para reviver alguém.")
+        return
+
   
     print("\nRevivendo aliados...")
     while almas:
         
+        if count >= 4 and not possui_amuletos_capacidade_extra():
+            print("A party está cheia. Não é possível reviver mais aliados sem um Amuleto do Arsenal.")
+            break
+
         personagem = almas.pop(0)
         tail = add_node(tail, personagem)
-        
+        count +=1
         print(f"{personagem['Nome']} foi revivido.")
    
     print("Todos os aliados foram revividos.")
