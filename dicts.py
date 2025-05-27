@@ -8,9 +8,9 @@ player = {
  \__I__/ 
  /__I__\  
 """,
-    "hp": 14000,
+    "hp": 14,
     "defesa": 4,
-    "forca": 500,
+    "forca": 5,
     "amigo": True,
 }
 

@@ -35,7 +35,7 @@ boss2_encounter = False
 boss3_encounter = False
 final_boss_encounter = False
 
-starts = 1
+starts = 0
 
 progressao = 0
 
