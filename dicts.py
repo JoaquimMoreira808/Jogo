@@ -8,9 +8,9 @@ player = {
  \__I__/ 
  /__I__\  
 """,
-    "hp": 14,
+    "hp": 14000,
     "defesa": 4,
-    "forca": 5,
+    "forca": 500,
     "amigo": True,
 }
 
@@ -28,7 +28,7 @@ personagens = [
 """,
         "hp": 16,
         "defesa": 4,
-        "forca": 30,
+        "forca": 5,
         "amigo": True
     },
     {
@@ -237,20 +237,47 @@ estruturas = {
 boss1_party = [
     {
         "Nome": "Aeli, um peão.",
-        "hp": 18,          # um pouco mais que o Peão (16)
-        "defesa": 5,       # um pouco maior que o Peão (4)
-        "forca": 6         # um pouco mais que o Peão (5)
+        "hp": 18,          
+        "defesa": 5,       
+        "forca": 6         
     },
     {
         "Nome": "Tharn, um peão.",
-        "hp": 22,          # um pouco menos que a Torre (20)
-        "defesa": 6,       # igual à Torre (6)
-        "forca": 6         # mais forte que Torre (4) e Peão (5)
+        "hp": 22,          
+        "defesa": 6,       
+        "forca": 6         
     },
     {
         "Nome": "Maegra, a torre",
-        "hp": 35,          # mais resistente que a Torre (20) e Cavalo (13)
-        "defesa": 9,       # bem defensiva, maior que todos
-        "forca": 10        # dano forte, maior que o Cavalo (7)
+        "hp": 35,          
+        "defesa": 9,       
+        "forca": 10        
+    }
+]
+
+boss2_party = [
+    {
+    "Nome": "O Rei Branco, Coroa Partida",
+    "hp": 48, 
+    "defesa": 10,
+    "forca": 12     
+    }
+]
+
+boss3_party = [
+    {
+        "Nome": "Selene, a Rainha Branca",
+        "hp": 20,
+        "defesa": 10,
+        "forca": 4
+    }
+]
+
+final_boss_party = [
+    {
+        "Nome": "Gustav O'Martoz, o Último Lorde da Coroa",
+        "hp": 60,          
+        "defesa": 10,      
+        "forca": 15    
     }
 ]

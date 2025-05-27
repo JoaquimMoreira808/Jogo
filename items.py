@@ -171,7 +171,7 @@ nucleo_ocioso_maegra= Item(
     "Após sua queda, seu corpo rachou, revelando este ovo cravado de runas — símbolo de sua antiga vontade protetora.\n"
     "Diz-se que 'Enquanto o Ovo pulsa, Maegra ainda guarda o que resta.'",
     raridade="Lendário",
-    hp=15
+    hp=5
 )
 
 #Dicionário dos itens
@@ -190,14 +190,6 @@ itens_possiveis_encontrar = {
     "carta_nunca_entregue": carta_nunca_entregue,
     "botao_segundo_lanceiro": botao_segundo_lanceiro,
     "ovo_torre_ociosa": ovo_torre_ociosa,
-}
-
-item_boss1 = {
-    "nucleo_ocioso_maegra": nucleo_ocioso_maegra,
-}
-
-item_boss2 = {
-    "espada_rei_caido": espada_rei_caido,
 }
 
 #Dicionario amuletos

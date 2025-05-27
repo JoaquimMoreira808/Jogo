@@ -8,6 +8,7 @@ import copy
 import random
 import os
 import time
+import sys
 from collections import defaultdict
 
 #=================================================================
@@ -30,6 +31,9 @@ def digitar(texto: str, delay: float = 0.03):
 #Varíaveis globais
 
 boss1_encounter = False
+boss2_encounter = False
+boss3_encounter = False
+final_boss_encounter = False
 
 starts = 1
 
@@ -668,7 +672,7 @@ def usar_item(player_node):
             print(F"{get_nome(item)} causa {ROXO}{item.dano_real} de dano real (ignorando a defesa){RESET} no oponente")
 
         # Remover item do inventário se for consumível
-        if get_raridade(item) in ["Comum", "Incomum"]:
+        if get_raridade(item) in ["Comum", "Incomum", "Lendário"]:
             inventario.remove(item)
             print(f"O item {get_nome(item)} foi consumido.")
         else:
@@ -1023,10 +1027,22 @@ def seguir_caminho():
         acampamento_aventureiros()
     elif progressao == 8:
         boss1()
+    elif progressao == 9:
+        inventario.append(nucleo_ocioso_maegra)
+        print("Você levou o Nucleo Ocioso, encontrado no cadáver de Maegra")
+        seguir_caminho()
     elif progressao == 16:
-        print("Teste")
+        boss2()
+    elif progressao ==17:
+        inventario.append(espada_rei_caido)
+        print("Você levou a Espada Do Rei, das mãos frias do Rei Branco")
+        seguir_caminho()
     elif progressao == 24:
-        print("Teste")
+        boss3()
+    elif progressao == 25:
+        final_boss()
+    elif progressao == 26:
+        final()
     else:
         digitar(mensagem)
         evento = random.choices(acoes, weights=pesos, k=1)[0]
@@ -1177,9 +1193,135 @@ def boss1():
         digitar(f"{BRANCO}“Tu não passas. É nosso dever não deixar que a história se repita, agora morras, peão.”{RESET}")
 
         digitar("Prepare-se para enfrentar:")
+        continuar()
         print(boss1_art)
+        continuar()
         boss1_encounter = True
         encontrar_inimigo_definido(boss1_party)
 
+def boss2():
+    global boss2_encounter
+    if boss2_encounter == True:
+        digitar(f"{BRANCO}“Já não há mais quem me detenha, peão. Vem, e curva-te à coroa.”{RESET}")
+        encontrar_inimigo_definido(boss2_party)
+    else:
+        digitar(f"{CINZA}O Sepulcro das Cinzas repousa imóvel, sufocado por névoas antigas. Não há som. Não há vento. Apenas o fim esperando ser lembrado.{RESET}\n")
+        digitar(f"{CINZA}Diante do altar esquecido, entre lápides gastas pelo tempo, caminha o Rei Negro — encurvado, gasto, arrastando a própria existência.{RESET}\n")
+        digitar(f"{CINZA}Sua armadura é quase pó. Seus olhos, duas brasas sem chama, testemunhas de eras que não ousam mais ser contadas.{RESET}\n")
+
+        digitar(f"{CINZA}Ele se vira com lentidão, como se cada gesto já lhe fosse previsto. Como se soubesse que, enfim, a última peça se moveu.{RESET}")
+        digitar(f"{BRANCO}“Peão... tão tarde vieste.”{RESET}")
+        digitar(f"{BRANCO}“Fugi por tanto tempo... mas até o silêncio encontra seus caçadores.”{RESET}\n")
+
+        digitar(f"{CINZA}Ele apoia-se sobre a espada cravada no chão, os joelhos vacilando, o corpo traindo sua vontade. Ainda assim, sua voz... carrega peso de coroas partidas.{RESET}")
+        digitar(f"{BRANCO}“Tentei te deter. Não por ódio... mas por medo do que viria depois.”{RESET}")
+        digitar(f"{BRANCO}“Pois eu sabia... desde o começo... que meu irmão... já não era mais ele.”{RESET}\n")
+
+        digitar(f"{CINZA}Um tremor percorre o ar. O Rei Negro ergue a mão — mas não há tempo para gesto ou duelo.{RESET}")
+        digitar(f"{CINZA}Uma lâmina pálida atravessa-lhe o peito pelas costas, com precisão inexorável.{RESET}")
+        digitar(f"{CINZA}Não há dor em seus olhos — apenas o fim de uma fuga longa demais.{RESET}")
+
+        digitar(f"{BRANCO}“Então... ele finalmente me encontrou...”{RESET}")
+        digitar(f"{BRANCO}“Agora, só resta você.”{RESET}")
+
+        digitar(f"{CINZA}O corpo do Rei Negro se desfaz, não em sangue, mas em névoa que retorna ao chão que a criou.{RESET}")
+        digitar(f"{CINZA}E no vácuo que se forma, algo avança.{RESET}")
+        digitar(f"{CINZA}Não um irmão. Não um homem. Mas a ruína coroada — a ordem sem alma — a luz feita condenação.{RESET}\n")
+
+        digitar(f"{BRANCO}“O mundo se ajoelhou uma vez... e se ajoelhará de novo.”{RESET}")
+        digitar(f"{BRANCO}“Mas agora, sem reis fracos para fugir.”{RESET}")
+        
+        digitar("Prepare-se para enfrentar:")
+        continuar()
+        print(boss2_art)
+        continuar()
+        encontrar_inimigo_definido(boss2_party)
+        boss2_encounter = True
+
+def boss3():
+    global boss3_encounter 
+    if boss3_encounter == True:
+        digitar(f"{BRANCO}“Tua centelha ainda brilha... Ótimo. Deixa que eu a apague.”{RESET}")
+        encontrar_inimigo_definido(boss3_party)
+    else:
+        digitar(f"{CINZA}Ao fim do tabuleiro, sob um céu imóvel, um trono de marfim aguarda... vazio.{RESET}")
+        digitar(f"{CINZA}Mas não por muito tempo.{RESET}\n")
+
+        digitar(f"{CINZA}Dos véus brancos do horizonte, ela surge — passos suaves, mas letais. Um sussurro no fim do mundo.{RESET}")
+        digitar(f"{CINZA}A Rainha Branca.{RESET}\n")
+
+        digitar(f"{BRANCO}“Meu bravo peão... que caminho magnífico traçaste.”{RESET}")
+        digitar(f"{BRANCO}“A cada obstáculo vencido, a cada rei derrubado... era por mim que lutavas, embora não soubesse.”{RESET}")
+        digitar(f"{BRANCO}“Usei tua força, tua fé, tua fome. E agora, com a coroa ao alcance, só restas tu.”{RESET}\n")
+
+        digitar(f"{CINZA}Ela se aproxima, e sua presença silencia até os ecos. A luz ao redor morre em reverência profana.{RESET}")
+        digitar(f"{BRANCO}“Não há trono para dois. E tu nasceste para ser consumido.”{RESET}")
+        digitar(f"{BRANCO}“Agora, curva-te. Deixa que eu te devore.”{RESET}\n")
+
+        digitar("Prepare-se para enfrentar:")
+        continuar()
+        print(boss3_art)
+        continuar()
+        encontrar_inimigo_definido(boss3_party)
+        boss_rainha_encontrada = True
+
+
+def final_boss():
+    global final_boss_encounter
+    if final_boss_encounter == True:
+        print(f"{BRANCO}“Se queres o fardo, toma-o. Mas terás que passar por mim.”{RESET}")
+    else:
+        digitar(f"{CINZA}Seus dedos tocam a Coroa.{RESET}")
+        digitar(f"{CINZA}Por um instante, tudo é silêncio. Paz. Vitória...{RESET}")
+        digitar(f"{CINZA}Mas então — as chamas.{RESET}")
+        digitar(f"{CINZA}O mundo se torce em espirais de cinza ardente. Você cai, ou talvez se eleva — é impossível saber.{RESET}\n")
+
+        digitar(f"{CINZA}Diante de ti, uma vastidão em ruínas. Torres tombadas, tronos partidos, reis... ossos esquecidos sob brasas eternas.{RESET}")
+        digitar(f"{CINZA}E entre as colunas retorcidas de um trono impossível... algo ergue-se.{RESET}")
+
+        digitar(f"{BRANCO}“Mais um?”{RESET}")
+        digitar(f"{BRANCO}“Mais um que acreditou que o poder poderia ser possuído.”{RESET}")
+        digitar(f"{BRANCO}“Bem-vindo ao Julgamento da Coroa, peão.”{RESET}")
+        
+        digitar(f"{CINZA}Sua armadura ferve como o esquecido sol. Seu corpo carrega cicatrizes de eras incontáveis, e seus olhos... fogo sólido.{RESET}")
+        digitar(f"{BRANCO}“Sou Gustav O'Martoz. Último Lorde da Coroa.”{RESET}")
+        digitar(f"{BRANCO}“Aquele que a enfrentou... e não foi digno. Aquele que a guarda... pois não há ninguém mais.”{RESET}")
+
+        digitar(f"{BRANCO}“Se queres o fardo, toma-o. Mas terás que passar por mim. Pois a Coroa só aceita os que tem mais do que reis.”{RESET}")
+        continuar()
+        print(final_boss_art)
+        continuar()
+        encontrar_inimigo_definido(final_boss_party)
+
 
 #================================================================== 
+
+def final():
+    digitar(f"{VERMELHO}O calor das chamas envolve tudo. Gustav O'Martoz ruge em agonia, sua coroa derretendo-se na fúria do seu próprio poder corrompido.{RESET}")
+    digitar(f"{VERMELHO}Tu, peão, tornaste-te digno da coroa ao resistir onde outros caíram.{RESET}\n")
+
+    digitar(f"{BRANCO}“Tu sobreviveste à fornalha do destino, e agora o peso da Coroa repousa em teus ombros.”{RESET}\n")
+
+    digitar(f"{AMARELO}À tua frente, duas portas surgem — duas possibilidades que irão moldar o futuro do mundo:{RESET}")
+    digitar(f"{AMARELO}1. A coroa da Rainha — símbolo da criação e do renascimento. Poderás criar vida e popular este mundo esquecido.{RESET}")
+    digitar(f"{AMARELO}2. A coroa do Rei — símbolo da justiça e do sacrifício. Poderás governar um mundo fadado ao fim, mas com uma vida que valha a pena.{RESET}\n")
+    escolha_final()
+
+def escolha_final():
+    escolha = input("Escolha seu destino (1 - Rainha, 2 - Rei): ").strip()
+
+    if escolha == "1":
+        digitar(f"{BRANCO}Ao aceitar a coroa da Rainha, sentes a essência da criação pulsar em tuas mãos.{RESET}")
+        digitar(f"{BRANCO}Este mundo árido começa a florescer sob teu toque. Vida brota das cinzas e a esperança renasce.{RESET}")
+        digitar(f"{BRANCO}Tu és a Guardiã da Vida, a Rainha que faz o Tabuleiro respirar novamente.{RESET}\n")
+        digitar(f"{VERDE}Fim - O Ciclo da Criação{RESET}")
+        sys.exit()
+    elif escolha == "2":
+        digitar(f"{AZUL}Ao aceitar a coroa do Rei, um peso justo e firme se acomoda em tua cabeça.{RESET}")
+        digitar(f"{AZUL}Mesmo sabendo do fim inevitável, governas com sabedoria e coragem, dando significado à vida que resta.{RESET}")
+        digitar(f"{AZUL}Tu és o Soberano da Última Era, o Rei que luta pela dignidade até o último suspiro.{RESET}\n")
+        digitar(f"{VERDE}Fim - O Julgamento Final{RESET}")
+        sys.exit()
+    else:
+        digitar(f"{VERMELHO}Escolha inválida. O destino não espera por indecisos.{RESET}")
+        escolha_final()
