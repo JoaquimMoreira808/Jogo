@@ -216,7 +216,7 @@ def tentar_drop_fragmento(chance=0.5):
         fragmentos_coletados.add(frag)
         atr = fragmentos_catalogo[frag]["atributo"]
         bonus = fragmentos_catalogo[frag]["bonus"]
-        print(f"Pegou {frag}! (+{bonus} {atr})")
+        print(f"Você obteve um{frag}! (+{bonus} {atr})")
         inventario.append
    
 
@@ -224,7 +224,7 @@ def tentar_drop_fragmento(chance=0.5):
 #aplicação de atributos adicionais aos personagens ao montar um amuleto
 def aplicar_atributos_personagens(fragmento):
 
-    global party_capacity #para aplicar o bonus de atributo a todos os personagens da party
+    global party_atributos #para aplicar o bonus de atributo a todos os personagens da party
 
     dados_frag = fragmentos_catalogo[fragmento]
     atr  = dados_frag["atributo"]
@@ -241,7 +241,7 @@ def aplicar_atributos_personagens(fragmento):
         for char in personagens + [player]:
             char["hp"] += val
     elif atr == "capacidade":
-        party_capacity += val   
+        party_capacidade += val   
 
     
     
@@ -323,7 +323,7 @@ def montar_amuletos_na_fogueira():
     ]
 
     if not disponiveis:
-        print("\n Não dá pra criar nenhum amuleto agora.")
+        print("\n Você não possui fragmentos suficientes.")
         return
 
     print("\n Amuletos disponíveis:")
@@ -408,14 +408,34 @@ def gameover():
    
 
 #ACAMPAMENTOS DOS AVENTUREIROS
+def possui_amuletos_capacidade_extra():
+    for item in inventario:
+        if isinstance(item, dict) and "capacidade" in item.get("atributos", {}):
+            return True
+    return False
+
 def acampamento_aventureiros():
     global head, tail
     tail = obter_ultimo_node(head)
+
+    count = 0
+    atual = head
+
+    while atual:
+        count += 1
+        atual = atual.next
 
     digitar("um acampamento. A fogueira bruxuleia, iluminando")
     digitar("os rostos cansados dos aventureiros.")
     digitar('"Um de nós pode ir com você", diz um deles, com olhos sombrios. Quem você escolhe?')
     continuar()
+
+    if count >= 4 and not possui_amuletos_capacidade_extra():
+        digitar("Seu grupo já tem 4 membros. Você precisa de um Amuleto do Arsenal para recrutar mais aventureiros.")
+        continuar()
+        return
+
+   
 
     personagens_aleatorios = random.sample(personagens, 3)
     opcoes = {}
@@ -522,7 +542,7 @@ def remover_tail(head):
 #Definição de party
 head = Node(copy.deepcopy(player))
 tail = head
-party_capacidade = len(personagens)
+party_atributos = len(personagens)
 #==================================================================
 
 #AÇÕES DO GAME
@@ -999,13 +1019,18 @@ def abrir_inventario():
                 categorias["Itens de Combate"].append(item)
 
     for frag in fragmentos_coletados:
-        categorias["Fragmentos Amuletos"].append(item)
+        categorias["Fragmentos Amuletos"].append({
+            "nome": f"Fragmento de {frag}",
+            "descricao_longa": f"Um fragmento que contém o poder de {frag}. Junte-o a outro para montar um amuleto.",
+            "raridade": "Comum"     
+        })
 
     while True:
         print("\n--- Inventário: ---")
         nomes_categorias = list(categorias.keys())
         for idx, nome_cat in enumerate(nomes_categorias, start=1):
             print(f"{idx}. {nome_cat} ({len(categorias[nome_cat])} itens)")
+        print("0. Voltar")
 
         try:
             escolha_cat = int(input("\nEscolha uma categoria para ver os itens (0 para voltar): "))
