@@ -174,7 +174,7 @@ class Node:
 ## Informacões Adicionais
 ### :busts_in_silhouette: Integrantes
 
-- **Nome:** André | **RA:** :man_technologist:
+- **Nome:** André Luis da Silva Reis | **RA:** 1987363  :man_technologist:
 - **Nome:** Joaquim Fernando Santana Moreira | **RA:** 1993917 :man_technologist:
 - **Nome:** José Vitor de Almida Lima | **RA:** 1994104 :man_technologist:
 
