@@ -10,7 +10,7 @@ player = {
 """,
     "hp": 14,
     "defesa": 4,
-    "forca": 30,
+    "forca": 5,
     "amigo": True,
 }
 

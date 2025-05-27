@@ -173,6 +173,7 @@ def mostrar_party():
 #==================================================================
 
 #HELPPER PARA O SISTEMA DE ITENS E AMULETOS
+#Informações dos itens
 def get_nome(item):
     if isinstance(item, dict):
         return item.get('nome', 'Item Desconhecido')
@@ -189,62 +190,14 @@ def get_descricao_curta(item):
     if isinstance(item, dict):
         return item.get('descricao_curta', 'Item não possui Informações')
     else:
-        return getattr(item, 'nome', 'Item não possui Informações')
+        return getattr(item, 'descricao_curta', 'Item não possui Informações')
 
 def get_descricao_longa(item):
     if isinstance(item, dict):
         return item.get('descricao_longa', 'Sem descrição detalhada.')
     else:
         return getattr(item, 'descricao_longa', 'Sem descrição detalhada.')
-    
-#==================================================================
 
-#Amuletos
-fragmentos_coletados: set[str] = set()
-amuletos_coletados: set[str] = set()
-
-def tentar_drop_fragmento(chance=0.5):
-    if random.random() >= chance:
-        print("Nenhum fragmento desta vez.")
-        return
-        
-
-    frag = random.choice(list(fragmentos_catalogo))
-    if frag in fragmentos_coletados:
-        print(f"Você achou outro {frag}, mas já tem esse.")
-    else:
-        fragmentos_coletados.add(frag)
-        atr = fragmentos_catalogo[frag]["atributo"]
-        bonus = fragmentos_catalogo[frag]["bonus"]
-        print(f"Você obteve um{frag}! (+{bonus} {atr})")
-        inventario.append
-   
-
-#==================================================================
-#aplicação de atributos adicionais aos personagens ao montar um amuleto
-def aplicar_atributos_personagens(fragmento):
-
-    global party_atributos #para aplicar o bonus de atributo a todos os personagens da party
-
-    dados_frag = fragmentos_catalogo[fragmento]
-    atr  = dados_frag["atributo"]
-    val  = dados_frag["bonus"]
-
-  
-    if atr == "força":
-        for char in personagens + [player]:
-            char["forca"] += val
-    elif atr == "resistência":
-        for char in personagens + [player]:
-            char["defesa"] += val
-    elif atr == "vida":
-        for char in personagens + [player]:
-            char["hp"] += val
-    elif atr == "capacidade":
-        party_capacidade += val   
-
-    
-    
 #Caracteristicas dos itens
 def get_dano(item):
     try:
@@ -277,6 +230,52 @@ def get_defesa(item):
         return int(getattr(item, 'defesa', 0) or 0)
     except (ValueError, TypeError):
         return 0
+
+#==================================================================
+
+#Amuletos
+fragmentos_coletados: set[str] = set()
+amuletos_coletados: set[str] = set()
+
+def tentar_drop_fragmento(chance=0.5):
+    if random.random() >= chance:
+        print("Nenhum fragmento desta vez.")
+        return
+        
+
+    frag = random.choice(list(fragmentos_catalogo))
+    if frag in fragmentos_coletados:
+        print(f"Você achou outro {frag}, mas já tem esse.")
+    else:
+        fragmentos_coletados.add(frag)
+        atr = fragmentos_catalogo[frag]["atributo"]
+        bonus = fragmentos_catalogo[frag]["bonus"]
+        print(f"Você obteve um{frag}! (+{bonus} {atr})")
+        inventario.append
+
+#==================================================================
+#aplicação de atributos adicionais aos personagens ao montar um amuleto
+def aplicar_atributos_personagens(fragmento):
+
+    global party_atributos #para aplicar o bonus de atributo a todos os personagens da party
+
+    dados_frag = fragmentos_catalogo[fragmento]
+    atr  = dados_frag["atributo"]
+    val  = dados_frag["bonus"]
+
+  
+    if atr == "força":
+        for char in personagens + [player]:
+            char["forca"] += val
+    elif atr == "resistência":
+        for char in personagens + [player]:
+            char["defesa"] += val
+    elif atr == "vida":
+        for char in personagens + [player]:
+            char["hp"] += val
+    elif atr == "capacidade":
+        party_capacidade += val   
+
 
 #Transforma as tuplas em dicionários
 pesos_raridade_dict = dict(pesos_raridade)
@@ -351,7 +350,7 @@ def montar_amuletos_na_fogueira():
     for frag in fragmentos_usados:
         aplicar_atributos_personagens(frag)
 
-    print(f"\nForjou **{nome_amuleto}**!")
+    print(f"\nForjou {AZUL}**{nome_amuleto}**{RESET}!")
     for k, v in dados["atributos"].items():
         sinal = "+" if v >= 0 else ""
         print(f"   • {k}: {sinal}{v}")
@@ -608,27 +607,31 @@ def usar_item(player_node):
 
     if not escolha.isdigit():
         print("Opção inválida. Tente novamente.")
-        return 0
+        return 0, 0
 
     escolha = int(escolha)
     if escolha == len(opcoes) + 1:
-        return 0  # Cancelou
+        return 0, 0  # Cancelou
 
     if 1 <= escolha <= len(opcoes):
         item, _ = opcoes[escolha - 1]
-        print(f"\nVocê usou {get_nome(item)}!")
+        print(f"\nVocê usou {AZUL}{get_nome(item)}{RESET}!")
 
         dano_causado = 0
+        dano_real = 0
 
         if item.hp > 0:
             player_node.data['hp'] += item.hp
-            print(f"Você recuperou {item.hp} de HP!")
+            print(f"Você recuperou {VERDE}{item.hp} de HP{RESET}!")
         if item.defesa > 0:
             player_node.data['defesa'] += item.defesa
-            print(f"Sua defesa aumentou em {item.defesa}!")
+            print(f"Você aumentou sua {AMARELO}defesa em {item.defesa}{RESET}!")
         if item.dano > 0:
             dano_causado = item.dano
-            print(f"{get_nome(item)} causa {item.dano} de dano no inimigo!")
+            print(f"{get_nome(item)} causa {VERMELHO}{item.dano} de dano{RESET} no oponente!")
+        if item.dano_real > 0:
+            dano_real = item.dano_real
+            print(F"{get_nome(item)} causa {ROXO}{item.dano_real} de dano real (ignorando a defesa){RESET} no oponente")
 
         # Remover item do inventário se for consumível
         if get_raridade(item) in ["Comum", "Incomum"]:
@@ -638,11 +641,11 @@ def usar_item(player_node):
             print(f"O item {get_nome(item)} não foi consumido por ser de raridade {get_raridade(item)}.")
 
         input("Pressione Enter para continuar...")
-        return dano_causado
+        return dano_causado, dano_real
 
     else:
         print("Opção inválida. Tente novamente.")
-        return 0
+        return 0, 0
 
 count = tamanho_lista(head)
 
@@ -687,27 +690,37 @@ def combate(head_player, head_inimigos, almas, bestiario):
 
         print("Sua vez! O que deseja fazer?")
         print("Enter. Atacar")
-        print("2. Usar item")
+        print("1. Usar item")
         escolha = input("Escolha: ")
 
 
         #Player ataca com itens, restaura hp ou aumenta a defesa
-        if escolha == "2":
-            dano_extra = usar_item(atacante)
-            if dano_extra > 0:
-                defensor.data['hp'] -= dano_extra
-                print(f"O inimigo recebeu {dano_extra} de dano pelo item!")
+        if escolha == "1":
+            dano_causado, dano_real = usar_item(atacante)
+
+            if dano_real > 0:
+                defensor.data['hp'] -= dano_real
+                print(f"O inimigo recebeu {dano_real} de dano real (ignora a defesa do oponente)!")
+
+            elif dano_causado > 0:
+                if defensor.data['defesa'] >= dano_causado:
+                    defensor.data['defesa'] -= dano_causado
+                    print(f"{VERMELHO}{defensor.data['Nome']} absorveu o dano com a defesa!{RESET}")
+                else:
+                    restante = dano_causado - defensor.data['defesa']
+                    defensor.data['defesa'] = 0
+                    defensor.data['hp'] = restante
+                    print(f"{VERMELHO}{defensor.data['Nome']} teve a sua defesa quebrada e perdeu {restante} de HP!{RESET}")
             else:
                 print("Você não usou nenhum item ou o item não causou dano.")
                 input("Pressione Enter para continuar...")
 
         #Player ataca
-        
         else:
             forca = atacante.data.get("forca", 0)
             defesa = defensor.data.get("defesa", 0)
 
-            print(f"{VERMELHO}{atacante.data['Nome']} ataca {defensor.data['Nome']} causando {forca} de dano!{RESET}")
+            print(f"{AMARELO}{atacante.data['Nome']} ataca {defensor.data['Nome']} causando {forca} de dano!{RESET}")
 
             if defesa > 0:
                 if forca <= defesa:
@@ -726,7 +739,7 @@ def combate(head_player, head_inimigos, almas, bestiario):
 
         # Verifica se inimigo morreu
         if defensor.data['hp'] <= 0:
-            print(f"{AMARELO}{defensor.data['Nome']} foi derrotado!")
+            print(f"{VERDE}{defensor.data['Nome']} foi derrotado!{RESET}")
             head_player = morreu(defensor, head_player)
 
             inimigo_morto = copy.deepcopy(defensor.data)
@@ -739,7 +752,8 @@ def combate(head_player, head_inimigos, almas, bestiario):
 
 
             continuar()
-        
+            continue
+
         #Inimigo ataca
         forca = defensor.data.get("forca", 0)
         defesa = atacante.data.get("defesa", 0)
@@ -759,7 +773,7 @@ def combate(head_player, head_inimigos, almas, bestiario):
             atacante.data['hp'] -= forca
             print(f"{VERMELHO}{atacante.data['Nome']} não tinha defesa e perdeu {forca} de HP!{RESET}")
 
-        continuar()
+        continuar() 
         
         if atacante.data['hp'] <= 0:
             print(f"{VERMELHO}{atacante.data['Nome']} foi derrotado!{RESET}")
@@ -820,9 +834,9 @@ def combate(head_player, head_inimigos, almas, bestiario):
         gameover()
         return
 
-    print("Todos os inimigos foram derrotados. Você venceu o combate!")  
-
-       
+    print("="*30)
+    print(f"{VERDE}Você venceu o combate!{RESET}")
+    print("="*30) 
 
     continuar()
 
@@ -1076,9 +1090,26 @@ def abrir_inventario():
 
                 item_escolhido = lista_itens[escolha_item - 1]
 
-                print(f"\nNome: {get_nome(item_escolhido)}")
-                print(f"Descrição: {get_descricao_longa(item_escolhido)}")
-                print(f"Raridade: {get_raridade(item_escolhido)}")
+                print(f"{AZUL}\nNome:{RESET} {get_nome(item_escolhido)}")
+                print(f"{AZUL}Descrição:{RESET} {get_descricao_longa(item_escolhido)}")
+                print(f"{AZUL}Raridade:{RESET} {get_raridade(item_escolhido)}")
+
+                # Exibir apenas atributos que o item possui
+                dano = get_dano(item_escolhido)
+                if dano:
+                    print(f"{AZUL}Dano:{RESET} {dano}")
+
+                dano_real = get_dano_real(item_escolhido)
+                if dano_real:
+                    print(f"{AZUL}Dano Real:{RESET} {dano_real}")
+
+                hp = get_hp(item_escolhido)
+                if hp:
+                    print(f"{AZUL}HP:{RESET} {hp}")
+
+                defesa = get_defesa(item_escolhido)
+                if defesa:
+                    print(f"{AZUL}Defesa:{RESET} {defesa}")
                 continuar()
 
         except ValueError:

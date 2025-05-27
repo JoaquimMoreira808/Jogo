@@ -2,7 +2,8 @@ import random
 from dicts import *
 
 class Item:
-    def __init__(self, nome, descricao_curta, descricao_longa, raridade="Comum", dano=0, dano_real=0, defesa=0, hp=0):
+    def __init__(self, nome, descricao_curta, descricao_longa, raridade="Comum", 
+                 dano=0, dano_real=0, defesa=0, hp=0):
         self.nome = nome
         self.descricao_curta = descricao_curta
         self.descricao_longa = descricao_longa
@@ -149,7 +150,9 @@ ovo_torre_ociosa = Item(
     hp=11
 )
 
-
+# ==========================
+# Itens Dropados pelos Boss
+# ==========================
 espada_rei_caido = Item(
     "Espada do Rei Caído",
     "Espada lendária que causa 12 de dano e ignora armadura.",
@@ -158,6 +161,17 @@ espada_rei_caido = Item(
     "Diz-se que 'Sua lâmina carrega o lamento das almas que tombaram diante dela.'",
     raridade="Lendário",
     dano_real=12
+)
+
+nucleo_ocioso_maegra= Item(
+    "Núcleo Ocioso de Maegra",
+    "Artefato lendário que reduz o dano recebido.",
+    "O núcleo remanescente de Maegra, o Bastião de Cinzas.\n"
+    "Forjado para proteger o Portão do Refúgio dos Esquecidos por ordem do Rei Negro, Maegra guardou seu posto por séculos até enlouquecer no silêncio eterno.\n"
+    "Após sua queda, seu corpo rachou, revelando este ovo cravado de runas — símbolo de sua antiga vontade protetora.\n"
+    "Diz-se que 'Enquanto o Ovo pulsa, Maegra ainda guarda o que resta.'",
+    raridade="Lendário",
+    hp=15
 )
 
 #Dicionário dos itens
@@ -176,8 +190,14 @@ itens_possiveis_encontrar = {
     "carta_nunca_entregue": carta_nunca_entregue,
     "botao_segundo_lanceiro": botao_segundo_lanceiro,
     "ovo_torre_ociosa": ovo_torre_ociosa,
-    "espada_rei_caido": espada_rei_caido,
+}
 
+item_boss1 = {
+    "nucleo_ocioso_maegra": nucleo_ocioso_maegra,
+}
+
+item_boss2 = {
+    "espada_rei_caido": espada_rei_caido,
 }
 
 #Dicionario amuletos
