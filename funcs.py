@@ -1084,8 +1084,8 @@ def abrir_inventario():
 
     for frag in fragmentos_coletados:
         categorias["Fragmentos Amuletos"].append({
-            "nome": f"Fragmento de {frag}",
-            "descricao_longa": f"Um fragmento que contém o poder de {frag}. Junte-o a outro para montar um amuleto.",
+            "nome": f"{frag}",
+            "descricao_longa": f"Um fragmento que contém um poder oculto. Junte-o a outro para montar um amuleto.",
             "raridade": "Comum"     
         })
 
