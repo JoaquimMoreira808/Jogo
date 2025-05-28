@@ -64,6 +64,7 @@ def debug():
         print("║ 2. Encontrar estrutura         ║")
         print("║ 3. Acampamento                 ║")
         print("║ 4. Progressao                  ║")
+        print("║ 5. Dropar amuleto              ║")
         print("║ 0. Menu                        ║")
         print("╚════════════════════════════════╝")
 
@@ -81,6 +82,8 @@ def debug():
         elif escolha == "4":
             num = int(input("Número progressão:"))
             progressao += num
+        elif escolha == "5":
+            tentar_drop_fragmento()
         else:
             print("Opção inválida. Tente novamente.")
 
@@ -232,6 +235,43 @@ def get_defesa(item):
         return 0
 
 #==================================================================
+def mostrar_almas():
+    if not almas:
+        print("O frasco de almas pulsa... nenhum dos teus caiu no frias garras da escuridão.")
+    else:
+        sprites = ""
+        for personagem in almas:
+            sprites += f"{personagem['sprite']}\n"
+        print("\n" + sprites)
+
+        for personagem in almas:
+            print(f"{personagem['Nome']} | HP: {personagem['hp']} | Defesa: {personagem['defesa']} | Força: {personagem['forca']}")
+
+        continuar()
+#==================================================================
+
+def menu_fogueira(almas):
+    while True:
+        print("\n====Fogueira====")
+        print("1. Reviver aliado")
+        print("2. Montar amuleto")
+        print("3. Apagar fogueira")
+        escolha = input("Escolha uma opção: ")
+        if escolha == '1':
+            reviver_aliados(almas)
+        elif escolha == '2':
+            novo_amu = montar_amuletos()
+            if novo_amu:
+                inventario.append(novo_amu)
+                aplicar_bonus_amuleto([novo_amu], head, player)
+                print("Você montou um amuleto e os atributos foram aplicados aos personagens.")
+        elif escolha == '3':
+            print("Você apaga a fogueira e se retira.")
+            break
+        else:
+            print("Opção inválida tente novamente.")
+
+#==================================================================
 
 #Amuletos
 fragmentos_coletados: set[str] = set()
@@ -254,75 +294,37 @@ def tentar_drop_fragmento(chance=0.5):
         inventario.append
 
 #==================================================================
+
 #aplicação de atributos adicionais aos personagens ao montar um amuleto
-def aplicar_bonus_amuleto(amuletos):
-        for amuleto in amuletos:
-            for frag in amuleto["fragmentos"]:
-                dados_frag = fragmentos_catalogo.get(frag)
-                if not dados_frag:
-                    continue
+def aplicar_bonus_amuleto(amuletos, head, player):
+    atributo_mapeamento = {
+        "força": "forca",
+        "resistência": "defesa",
+        "vida": "hp"
+    }
 
-                atr = dados_frag["atributo"]
-                val = dados_frag["bonus"]
+    for amuleto in amuletos:
+        for atributo, bonus in amuleto["atributos"].items():
+            if atributo == "capacidade":
+                global party_capacidade
+                party_capacidade += bonus
+            elif atributo in atributo_mapeamento:
+                atributo_personagem = atributo_mapeamento[atributo]
 
-                if atr == "força":
-                    for char in personagens + [player]:
-                        char["forca"] += val
-                elif atr == "resistência":
-                    for char in personagens + [player]:
-                        char["defesa"] += val
-                elif atr == "vida":
-                    for char in personagens + [player]:
-                        char["hp"] += val
-                elif atr == "capacidade":
-                    global party_capacidade
-                    party_capacidade += val
+                # Aplica o bônus ao player
+                player[atributo_personagem] += bonus
 
+                # Aplica o bônus à party
+                atual = head
+                while atual:
+                    atual.data[atributo_personagem] += bonus
+                    atual = atual.next
 
-
-
-#Transforma as tuplas em dicionários
 pesos_raridade_dict = dict(pesos_raridade)
-#==================================================================
-def mostrar_almas():
-    if not almas:
-        print("O frasco de almas pulsa... nenhum dos teus caiu no frias garras da escuridão.")
-    else:
-        sprites = ""
-        for personagem in almas:
-            sprites += f"{personagem['sprite']}\n"
-        print("\n" + sprites)
 
-        for personagem in almas:
-            print(f"{personagem['Nome']} | HP: {personagem['hp']} | Defesa: {personagem['defesa']} | Força: {personagem['forca']}")
-
-        continuar()
 #==================================================================
 
-def menu_fogueira(almas):
-                while True:
-                    print("\n====Fogueira====")
-                    print("1. Reviver aliado")
-                    print("2. Montar amuleto")
-                    print("3. Apagar fogueira")
-                    escolha = input("Escolha uma opção: ")
-                    if escolha == '1':
-                        reviver_aliados(almas)
-                    elif escolha == '2':
-                        sucesso = montar_amuletos_na_fogueira()
-                        if sucesso:
-                            novo_amu = montar_amuletos_na_fogueira()
-                            inventario.append(novo_amu)
-                            aplicar_bonus_amuleto([novo_amu])
-                            print("Você montou um amuleto e os atributos foram aplicados aos personagens.")
-                    elif escolha =='3':
-                        print("Você apaga a fogueira e se retira.")
-                        break
-                    else:
-                        ("Opção inválida tente novamente.")
-
-
-def montar_amuletos_na_fogueira() -> bool:
+def montar_amuletos():
     disponiveis = [
         nome for nome, info in amuletos_catalogo.items()
         if info["requer"].issubset(fragmentos_coletados)
@@ -351,10 +353,15 @@ def montar_amuletos_na_fogueira() -> bool:
 
         nome_amuleto = disponiveis[escolha]
         dados = amuletos_catalogo[nome_amuleto]
+
         fragmentos_coletados.difference_update(dados["requer"])
         amuletos_coletados.add(nome_amuleto)
 
-        aplicar_bonus_amuleto([{"fragmentos": list(dados["requer"])}])
+        amuleto_forjado = {
+            "nome": nome_amuleto,
+            "fragmentos": list(dados["requer"]),
+            "atributos": dados["atributos"]
+        }
 
         print(f"\nForjou {AZUL}**{nome_amuleto}**{RESET}!")
         for atributo, bonus in dados["atributos"].items():
@@ -362,7 +369,7 @@ def montar_amuletos_na_fogueira() -> bool:
             print(f"   • {atributo}: {sinal}{bonus}")
         print("Todos os aliados sentiram o poder de um novo amuleto!\n")
 
-    return True
+        return amuleto_forjado
 
 #==================================================================
 
@@ -392,8 +399,11 @@ def reviver_aliados(almas):
         count += 1
         atual = atual.next
     
-    if count >= 4 and not possui_amuletos_capacidade_extra():
-        print("Seu grupo já tem 4 membros. Você precisa de um Amuleto do Arsenal para reviver alguém.")
+    if count >= party_capacidade + len(almas):
+    
+        digitar(f"Seu grupo já tem {party_capacidade} membros. "
+            "Você precisa de um Amuleto do Arsenal para recrutar mais aventureiros.")
+        continuar()
         return
 
   
@@ -437,7 +447,7 @@ def possui_amuletos_capacidade_extra():
     return False
 
 def acampamento_aventureiros():
-    global head, tail
+    global head, tail, party_capacidade
     tail = obter_ultimo_node(head)
 
     count = 0
@@ -452,8 +462,9 @@ def acampamento_aventureiros():
     digitar('"Um de nós pode ir com você", diz um deles, com olhos sombrios. Quem você escolhe?')
     continuar()
 
-    if count >= 4 and not possui_amuletos_capacidade_extra():
-        digitar("Seu grupo já tem 4 membros. Você precisa de um Amuleto do Arsenal para recrutar mais aventureiros.")
+    if count >= party_capacidade:
+        digitar(f"Seu grupo já tem {party_capacidade} membros. "
+                "Você precisa de um Amuleto do Arsenal para recrutar mais aventureiros.")
         continuar()
         return
 
@@ -564,7 +575,7 @@ def remover_tail(head):
 #Definição de party
 head = Node(copy.deepcopy(player))
 tail = head
-party_atributos = len(personagens)
+party_capacidade = 4
 #==================================================================
 
 #AÇÕES DO GAME
