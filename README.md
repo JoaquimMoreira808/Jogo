@@ -11,6 +11,8 @@
 >
 > **Obs:** Todas as informações sobre os colaboradores e a Universidade se encontram no fim deste README.
 
+## Link do [Fluxograma do SIstema](https://excalidraw.com/#json=YHlOT2jcWS6ZVSMGZVmxv,4MjIXevlfRjiZ4ClaedPbw)
+
 ---
 
 ## :open_file_folder: Estrutura do Projeto
